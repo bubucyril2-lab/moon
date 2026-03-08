@@ -26,12 +26,25 @@ const Login = () => {
       // Self-healing: If profile is missing, create a default one
       if (!userDoc.exists()) {
         const isInitialAdmin = email.toLowerCase().includes('admin');
+        const emailPrefix = userCredential.user.email?.split('@')[0] || 'Member';
+        
+        // Try to be smarter about the name from email if possible
+        let firstName = 'User';
+        let lastName = emailPrefix.charAt(0).toUpperCase() + emailPrefix.slice(1);
+        
+        if (emailPrefix.includes('.')) {
+          const parts = emailPrefix.split('.');
+          firstName = parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
+          lastName = parts[1].charAt(0).toUpperCase() + parts[1].slice(1);
+        }
+
         await setDoc(userRef, {
-          first_name: 'User',
-          last_name: userCredential.user.email?.split('@')[0] || 'Member',
+          first_name: firstName,
+          last_name: lastName,
           email: userCredential.user.email,
           role: isInitialAdmin ? 'admin' : 'customer',
           status: 'active',
+          profile_picture: userCredential.user.photoURL || null,
           created_at: new Date().toISOString()
         });
         

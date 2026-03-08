@@ -7,6 +7,7 @@ interface User {
   id: string;
   first_name: string;
   last_name: string;
+  email: string;
   role: string;
   profile_picture: string | null;
   status: string;
@@ -44,6 +45,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               id: firebaseUser.uid,
               first_name: userData.first_name,
               last_name: userData.last_name,
+              email: userData.email || firebaseUser.email || '',
               role: userData.role || 'customer',
               profile_picture: userData.profile_picture || null,
               status: userData.status || 'pending'

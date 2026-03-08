@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { User, Mail, Phone, MapPin, Lock, Camera, Loader2, AlertCircle } from 'lucide-react';
+import { User, Mail, Phone, MapPin, Lock, Camera, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc, collection, addDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
@@ -20,6 +20,7 @@ const Register = () => {
   const [profilePic, setProfilePic] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -83,11 +84,15 @@ const Register = () => {
         created_at: new Date().toISOString()
       });
 
-      // No alert, just push to dashboard
-      navigate('/dashboard', { replace: true });
+      setSuccess(true);
+      setLoading(false);
+      
+      // Small delay to show success state before redirecting
+      setTimeout(() => {
+        navigate('/dashboard', { replace: true });
+      }, 1500);
     } catch (err: any) {
       setError(err.message || 'Registration failed');
-    } finally {
       setLoading(false);
     }
   };
@@ -105,6 +110,13 @@ const Register = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="p-8 lg:p-12 space-y-8">
+          {success && (
+            <div className="p-4 bg-emerald-50 border border-emerald-100 text-emerald-600 rounded-xl flex items-center gap-3 text-sm font-bold animate-pulse">
+              <CheckCircle2 className="w-5 h-5" />
+              Registration successful! Redirecting to your dashboard...
+            </div>
+          )}
+
           {error && (
             <div className="p-4 bg-red-50 border border-red-100 text-red-600 rounded-xl flex items-center gap-3 text-sm">
               <AlertCircle className="w-5 h-5" />
