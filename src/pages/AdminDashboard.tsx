@@ -1170,9 +1170,9 @@ const AdminDashboard = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <div className="flex flex-col gap-10">
         {/* Admin Horizontal Navigation */}
-        <div className="flex flex-col md:flex-row gap-6 items-stretch md:items-center">
-          <nav className="flex-1 overflow-x-auto no-scrollbar">
-            <div className="bg-white rounded-3xl border border-zinc-200 p-2.5 flex gap-2 shadow-sm items-center min-w-max">
+        <div className="flex flex-col md:flex-row gap-6 items-stretch md:items-center max-w-full">
+          <nav className="flex-1 overflow-x-auto no-scrollbar max-w-full">
+            <div className="bg-white rounded-3xl border border-zinc-200 p-2.5 flex gap-2 shadow-sm items-center min-w-max max-w-full">
               <div className="px-6 py-3 border-r border-zinc-100 hidden xl:flex items-center gap-4">
                 <div className="w-10 h-10 rounded-2xl bg-zinc-900 flex items-center justify-center text-white shadow-lg shadow-zinc-200 overflow-hidden">
                   {user?.profile_picture ? (

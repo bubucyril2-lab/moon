@@ -221,8 +221,8 @@ const CustomerDashboard = () => {
           </div>
 
           {/* Navigation Bar */}
-          <nav className="sticky top-20 z-40">
-            <div className="bg-white/80 backdrop-blur-xl rounded-2xl md:rounded-3xl border border-zinc-200/50 p-1.5 flex gap-1 shadow-xl shadow-zinc-200/50 overflow-x-auto no-scrollbar">
+          <nav className="sticky top-20 z-40 max-w-full">
+            <div className="bg-white/80 backdrop-blur-xl rounded-2xl md:rounded-3xl border border-zinc-200/50 p-1.5 flex gap-1 shadow-xl shadow-zinc-200/50 overflow-x-auto no-scrollbar max-w-full">
               {[
                 { id: 'overview', icon: LayoutDashboard, label: 'Overview' },
                 { id: 'transfers', icon: Send, label: 'Transfers' },

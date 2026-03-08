@@ -12,6 +12,12 @@
   }
 }
 
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
+}
+
 body {
   background-color: #fafafa;
   min-height: 100vh;

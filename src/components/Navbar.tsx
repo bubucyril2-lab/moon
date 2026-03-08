@@ -86,26 +86,26 @@ const Navbar = () => {
   return (
     <nav className="sticky top-0 z-50">
       {/* Top Utility Bar */}
-      <div className="bg-zinc-900 text-white py-2 border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-          <div className="flex items-center gap-6">
-            <Link to="/services" className="text-[10px] font-black uppercase tracking-widest hover:text-emerald-400 transition-colors flex items-center gap-1.5">
-              <Briefcase className="w-3 h-3" /> Services
+      <div className="bg-zinc-900 text-white py-2 border-b border-white/5 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center gap-2">
+          <div className="flex items-center gap-3 sm:gap-6 overflow-x-auto no-scrollbar">
+            <Link to="/services" className="text-[10px] font-black uppercase tracking-widest hover:text-emerald-400 transition-colors flex items-center gap-1.5 whitespace-nowrap">
+              <Briefcase className="w-3 h-3" /> <span className="hidden xs:inline">Services</span>
             </Link>
-            <Link to="/about" className="text-[10px] font-black uppercase tracking-widest hover:text-emerald-400 transition-colors flex items-center gap-1.5">
-              <Info className="w-3 h-3" /> About
+            <Link to="/about" className="text-[10px] font-black uppercase tracking-widest hover:text-emerald-400 transition-colors flex items-center gap-1.5 whitespace-nowrap">
+              <Info className="w-3 h-3" /> <span className="hidden xs:inline">About</span>
             </Link>
-            <Link to="/contact" className="text-[10px] font-black uppercase tracking-widest hover:text-emerald-400 transition-colors flex items-center gap-1.5">
-              <Phone className="w-3 h-3" /> Contact
+            <Link to="/contact" className="text-[10px] font-black uppercase tracking-widest hover:text-emerald-400 transition-colors flex items-center gap-1.5 whitespace-nowrap">
+              <Phone className="w-3 h-3" /> <span className="hidden xs:inline">Contact</span>
             </Link>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Languages className="w-3 h-3 text-zinc-500" />
-              <div id="google_translate_element" className="scale-75 origin-right"></div>
+          <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
+            <div className="flex items-center gap-1 sm:gap-2">
+              <Languages className="w-3 h-3 text-zinc-500 hidden sm:block" />
+              <div id="google_translate_element" className="scale-75 origin-right max-w-[100px] sm:max-w-none"></div>
             </div>
             {!isAuthenticated && (
-              <Link to="/login" className="text-[10px] font-black uppercase tracking-widest bg-white/10 px-3 py-1 rounded-md hover:bg-white/20 transition-all">
+              <Link to="/login" className="text-[10px] font-black uppercase tracking-widest bg-white/10 px-2 sm:px-3 py-1 rounded-md hover:bg-white/20 transition-all whitespace-nowrap">
                 Login
               </Link>
             )}
