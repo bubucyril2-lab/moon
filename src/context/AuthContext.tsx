@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { onAuthStateChanged, signOut, User as FirebaseUser } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { auth, db } from '../lib/firebase';
 
 interface User {
@@ -27,10 +27,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+    let unsubscribeProfile: (() => void) | null = null;
+
+    const unsubscribeAuth = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (unsubscribeProfile) {
+        unsubscribeProfile();
+        unsubscribeProfile = null;
+      }
+
       if (firebaseUser) {
-        try {
-          const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+        // Use onSnapshot for real-time updates and to handle race conditions during registration
+        unsubscribeProfile = onSnapshot(doc(db, 'users', firebaseUser.uid), (userDoc) => {
           if (userDoc.exists()) {
             const userData = userDoc.data();
             setUser({
@@ -42,19 +49,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               status: userData.status || 'pending'
             });
           } else {
+            // User exists in Auth but not yet in Firestore (common during registration)
             setUser(null);
           }
-        } catch (error) {
-          console.error("Error fetching user profile:", error);
+          setLoading(false);
+        }, (error) => {
+          console.error("Error listening to user profile:", error);
           setUser(null);
-        }
+          setLoading(false);
+        });
       } else {
         setUser(null);
+        setLoading(false);
       }
-      setLoading(false);
     });
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribeAuth();
+      if (unsubscribeProfile) unsubscribeProfile();
+    };
   }, []);
 
   const logout = async () => {

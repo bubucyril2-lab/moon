@@ -21,21 +21,20 @@ const Navbar = () => {
 
   useEffect(() => {
     const initTranslate = () => {
-      if (window.google && window.google.translate && window.google.translate.TranslateElement) {
+      if (window.google && window.google.translate && typeof window.googleTranslateElementInit === 'function') {
         window.googleTranslateElementInit();
       }
     };
 
-    // Try immediately and then every second for a few times to handle slow loading
+    // Initial call
     initTranslate();
-    const interval = setInterval(initTranslate, 1000);
-    const timeout = setTimeout(() => clearInterval(interval), 5000);
 
-    return () => {
-      clearInterval(interval);
-      clearTimeout(timeout);
-    };
-  }, [isAuthenticated]); // Re-run when auth state changes as the element might be remounted
+    // Aggressive polling for the first 5 seconds to handle loading and re-renders
+    const interval = setInterval(initTranslate, 1000);
+    
+    // Cleanup
+    return () => clearInterval(interval);
+  }, [location.pathname, isAuthenticated]); // Re-run on navigation and auth changes
 
   return (
     <nav className="sticky top-0 z-50">
@@ -60,8 +59,9 @@ const Navbar = () => {
 
           <div className="flex items-center gap-4">
             {/* Google Translate Desktop - Near Login */}
-            <div className="hidden md:block">
-              <div id="google_translate_element" className="scale-90"></div>
+            <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-zinc-50 border border-zinc-200 rounded-lg">
+              <Languages className="w-4 h-4 text-zinc-400" />
+              <div id="google_translate_element"></div>
             </div>
 
             <div className="hidden md:flex items-center gap-4">
@@ -169,6 +169,10 @@ const Navbar = () => {
             </>
           )}
           <div className="px-4 pt-2">
+            <div className="flex items-center gap-2 mb-2 text-zinc-500">
+              <Languages className="w-4 h-4" />
+              <span className="text-xs font-bold uppercase tracking-wider">Select Language</span>
+            </div>
             <div id="google_translate_element_mobile"></div>
           </div>
         </div>

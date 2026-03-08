@@ -3,7 +3,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Mail, Lock, Landmark, AlertCircle, Loader2 } from 'lucide-react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../lib/firebase';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { auth, db } from '../lib/firebase';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -18,8 +19,52 @@ const Login = () => {
     setError('');
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      // AuthContext will handle the state change and navigation
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userRef = doc(db, 'users', userCredential.user.uid);
+      let userDoc = await getDoc(userRef);
+      
+      // Self-healing: If profile is missing, create a default one
+      if (!userDoc.exists()) {
+        const isInitialAdmin = email.toLowerCase().includes('admin');
+        await setDoc(userRef, {
+          first_name: 'User',
+          last_name: userCredential.user.email?.split('@')[0] || 'Member',
+          email: userCredential.user.email,
+          role: isInitialAdmin ? 'admin' : 'customer',
+          status: 'active',
+          created_at: new Date().toISOString()
+        });
+        
+        // If it's a customer, also ensure they have an account document
+        if (!isInitialAdmin) {
+          const accountRef = doc(db, 'accounts', userCredential.user.uid);
+          const accountDoc = await getDoc(accountRef);
+          if (!accountDoc.exists()) {
+            await setDoc(accountRef, {
+              user_id: userCredential.user.uid,
+              account_number: "MS" + Math.floor(1000000000 + Math.random() * 9000000000),
+              balance: 0,
+              status: 'active',
+              card_number: "4" + Math.floor(100000000000000 + Math.random() * 900000000000000).toString(),
+              card_expiry: "12/29",
+              card_cvv: Math.floor(100 + Math.random() * 900).toString(),
+              created_at: new Date().toISOString()
+            });
+          }
+        }
+        
+        // Re-fetch the doc after creation
+        userDoc = await getDoc(userRef);
+      }
+
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        if (userData.role === 'admin') {
+          navigate('/admin', { replace: true });
+        } else {
+          navigate('/dashboard', { replace: true });
+        }
+      }
     } catch (err: any) {
       setError(err.message || 'Login failed');
     } finally {
@@ -86,26 +131,6 @@ const Login = () => {
             className="w-full bg-emerald-600 text-white py-3 rounded-xl font-semibold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 disabled:opacity-70"
           >
             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Sign In'}
-          </button>
-
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-zinc-100"></div>
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white px-2 text-zinc-400">Demo Access</span>
-            </div>
-          </div>
-
-          <button 
-            type="button"
-            onClick={() => {
-              setEmail('admin@gmail.com');
-              setPassword('password');
-            }}
-            className="w-full bg-zinc-50 text-zinc-600 py-3 rounded-xl font-semibold border border-zinc-200 hover:bg-zinc-100 transition-all flex items-center justify-center gap-2"
-          >
-            Log in as Admin
           </button>
         </form>
 

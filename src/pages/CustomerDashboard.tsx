@@ -22,7 +22,8 @@ import {
   Trash2,
   Paperclip,
   FileText,
-  Image as ImageIcon
+  Image as ImageIcon,
+  LogOut
 } from 'lucide-react';
 import { 
   AreaChart, 
@@ -59,7 +60,7 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../lib/firebase';
 
 const CustomerDashboard = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
@@ -80,11 +81,12 @@ const CustomerDashboard = () => {
       // Fetch Transactions
       const txnsQuery = query(
         collection(db, 'transactions'),
-        where('user_id', '==', user.id),
-        orderBy('created_at', 'desc')
+        where('user_id', '==', user.id)
       );
       const txnsSnap = await getDocs(txnsQuery);
       const transactions = txnsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+      // Sort on client side to avoid composite index requirement
+      transactions.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
       
       // Calculate stats from transactions
       const income = transactions
@@ -158,32 +160,56 @@ const CustomerDashboard = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex flex-col gap-8">
         {/* Horizontal Navigation */}
-        <nav className="w-full overflow-x-auto no-scrollbar">
-          <div className="bg-white rounded-2xl border border-zinc-200 p-2 flex gap-2 shadow-sm min-w-max md:min-w-0">
-            {[
-              { id: 'overview', icon: LayoutDashboard, label: 'Overview' },
-              { id: 'transfers', icon: Send, label: 'Transfers' },
-              { id: 'beneficiaries', icon: Users, label: 'Beneficiaries' },
-              { id: 'history', icon: History, label: 'History' },
-              { id: 'loans', icon: TrendingUp, label: 'Loans' },
-              { id: 'chat', icon: MessageSquare, label: 'Support Chat' },
-              { id: 'settings', icon: Settings, label: 'Settings' }
-            ].map((item) => (
-              <button
-                key={item.id}
-                onClick={() => setActiveTab(item.id)}
-                className={`flex-1 min-w-[100px] md:min-w-[120px] flex items-center justify-center gap-2 px-3 md:px-4 py-3 rounded-xl text-xs md:text-sm font-medium transition-all ${
-                  activeTab === item.id 
-                    ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' 
-                    : 'text-zinc-600 hover:bg-zinc-50'
-                }`}
-              >
-                <item.icon className="w-4 h-4" />
-                {item.label}
-              </button>
-            ))}
-          </div>
-        </nav>
+        <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center">
+          <nav className="flex-1 overflow-x-auto no-scrollbar">
+            <div className="bg-white rounded-2xl border border-zinc-200 p-2 flex gap-2 shadow-sm items-center min-w-max">
+              <div className="px-4 md:px-6 py-2 border-r border-zinc-100 hidden xl:flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-zinc-100 flex items-center justify-center border border-zinc-200 overflow-hidden">
+                  {user?.profile_picture ? (
+                    <img src={user.profile_picture} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                  ) : (
+                    <User className="w-5 h-5 text-zinc-300" />
+                  )}
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-zinc-900 tracking-tight">{user?.first_name} {user?.last_name}</p>
+                  <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">Customer</p>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                {[
+                  { id: 'overview', icon: LayoutDashboard, label: 'Overview' },
+                  { id: 'transfers', icon: Send, label: 'Transfers' },
+                  { id: 'beneficiaries', icon: Users, label: 'Beneficiaries' },
+                  { id: 'history', icon: History, label: 'History' },
+                  { id: 'loans', icon: TrendingUp, label: 'Loans' },
+                  { id: 'chat', icon: MessageSquare, label: 'Support Chat' },
+                  { id: 'settings', icon: Settings, label: 'Settings' }
+                ].map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveTab(item.id)}
+                    className={`min-w-[100px] md:min-w-[120px] flex items-center justify-center gap-2 px-3 md:px-4 py-3 rounded-xl text-xs md:text-sm font-medium transition-all ${
+                      activeTab === item.id 
+                        ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' 
+                        : 'text-zinc-600 hover:bg-zinc-50'
+                    }`}
+                  >
+                    <item.icon className="w-4 h-4" />
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </nav>
+          <button
+            onClick={logout}
+            className="bg-white border border-zinc-200 px-6 py-4 rounded-2xl text-sm font-bold text-red-600 hover:bg-red-50 transition-all flex items-center justify-center gap-2 shadow-sm whitespace-nowrap"
+          >
+            <LogOut className="w-4 h-4" />
+            Logout
+          </button>
+        </div>
 
         {/* Main Content */}
         <main className="flex-1 min-w-0">
@@ -720,9 +746,12 @@ const LoanView = ({ onComplete }: { onComplete: () => void }) => {
 
   const fetchLoans = async () => {
     if (!user) return;
-    const q = query(collection(db, 'loans'), where('user_id', '==', user.id), orderBy('created_at', 'desc'));
+    const q = query(collection(db, 'loans'), where('user_id', '==', user.id));
     const snap = await getDocs(q);
-    setLoans(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+    const loansList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    // Sort on client side to avoid composite index requirement
+    loansList.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    setLoans(loansList);
   };
 
   const handleApply = async (e: React.FormEvent) => {
@@ -845,6 +874,19 @@ const ChatView = () => {
   const [uploading, setUploading] = useState(false);
   const [session, setSession] = useState<any>(null);
 
+  const fetchMessages = async (sessionId: string) => {
+    if (!sessionId) return;
+    const msgQuery = query(
+      collection(db, 'chat_messages'),
+      where('session_id', '==', sessionId)
+    );
+    const mSnap = await getDocs(msgQuery);
+    const msgs = mSnap.docs.map(d => d.data());
+    // Sort on client side to avoid composite index requirement
+    msgs.sort((a: any, b: any) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+    setMessages(msgs);
+  };
+
   useEffect(() => {
     if (!user) return;
     
@@ -868,23 +910,10 @@ const ChatView = () => {
         setSession({ id: sessionId, ...snap.docs[0].data() });
       }
 
-      const msgQuery = query(
-        collection(db, 'chat_messages'),
-        where('session_id', '==', sessionId),
-        orderBy('created_at', 'asc')
-      );
-      
-      const unsubscribe = onSnapshot(msgQuery, (mSnap) => {
-        setMessages(mSnap.docs.map(d => d.data()));
-      });
-      
-      return unsubscribe;
+      await fetchMessages(sessionId);
     };
 
-    const unsubPromise = initChat();
-    return () => {
-      unsubPromise.then(unsub => unsub && unsub());
-    };
+    initChat();
   }, [user]);
 
   const sendMessage = async (text = input) => {
@@ -903,6 +932,9 @@ const ChatView = () => {
       last_message: msgText,
       updated_at: new Date().toISOString()
     });
+
+    // Refresh messages after sending
+    await fetchMessages(session.id);
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -925,9 +957,17 @@ const ChatView = () => {
 
   return (
     <div className="bg-white rounded-3xl border border-zinc-200 h-[600px] flex flex-col">
-      <div className="p-6 border-b border-zinc-100 flex items-center gap-3">
-        <div className="w-3 h-3 bg-emerald-500 rounded-full animate-pulse" />
-        <h3 className="font-bold">Live Support</h3>
+      <div className="p-6 border-b border-zinc-100 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-3 h-3 bg-zinc-300 rounded-full" />
+          <h3 className="font-bold text-zinc-900">Support Chat</h3>
+        </div>
+        <button 
+          onClick={() => session && fetchMessages(session.id)}
+          className="text-xs font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1"
+        >
+          <History className="w-3 h-3" /> Refresh
+        </button>
       </div>
       <div className="flex-1 overflow-y-auto p-6 space-y-4">
         {messages.map((msg, i) => {

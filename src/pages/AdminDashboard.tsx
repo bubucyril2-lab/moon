@@ -13,6 +13,7 @@ import {
   DollarSign,
   Clock,
   Plus,
+  Minus,
   ArrowRightLeft,
   Settings,
   User,
@@ -25,6 +26,7 @@ import {
   Palette,
   Layout,
   Calendar,
+  LogOut
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { formatCurrency } from '../lib/utils';
@@ -45,6 +47,119 @@ import {
   limit
 } from 'firebase/firestore';
 import { db } from '../lib/firebase';
+
+const MasterControlRow = ({ customer, onUpdate, onDelete, onAction, formatCurrency }: any) => {
+  const [amount, setAmount] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleAdjustment = async (type: 'credit' | 'debit') => {
+    if (!amount || isNaN(parseFloat(amount))) return;
+    setLoading(true);
+    try {
+      const val = parseFloat(amount);
+      const adjustment = type === 'credit' ? val : -val;
+      const accountRef = doc(db, 'accounts', customer.id);
+      const accountSnap = await getDoc(accountRef);
+      
+      const batch = writeBatch(db);
+      if (!accountSnap.exists()) {
+        const accountNumber = "MS" + Math.floor(1000000000 + Math.random() * 9000000000);
+        batch.set(accountRef, {
+          user_id: customer.id,
+          account_number: accountNumber,
+          balance: adjustment,
+          status: 'active',
+          created_at: new Date().toISOString()
+        });
+      } else {
+        batch.update(accountRef, { balance: (accountSnap.data().balance || 0) + adjustment });
+      }
+
+      const txnRef = doc(collection(db, 'transactions'));
+      batch.set(txnRef, {
+        user_id: customer.id,
+        amount: adjustment,
+        description: `Bank ${type.charAt(0).toUpperCase() + type.slice(1)}`,
+        type: type,
+        status: 'completed',
+        reference: 'ADJ' + Math.random().toString(36).substring(2, 9).toUpperCase(),
+        created_at: new Date().toISOString()
+      });
+
+      await batch.commit();
+      setAmount('');
+      onUpdate();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <tr className="hover:bg-zinc-50 transition-colors border-b border-zinc-100">
+      <td className="px-6 py-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-zinc-100 flex items-center justify-center border border-zinc-200 overflow-hidden">
+            {customer.profile_picture ? (
+              <img src={customer.profile_picture} className="w-full h-full object-cover" />
+            ) : (
+              <div className="text-zinc-400 font-bold text-sm">
+                {customer.first_name.charAt(0)}
+              </div>
+            )}
+          </div>
+          <div>
+            <p className="font-bold text-zinc-900 text-sm">{customer.first_name} {customer.last_name}</p>
+            <p className="text-[10px] text-zinc-500">{customer.email}</p>
+          </div>
+        </div>
+      </td>
+      <td className="px-6 py-4">
+        <p className="text-xs font-mono text-zinc-600">{customer.account_number || 'NO ACCOUNT'}</p>
+        <p className="text-[10px] font-bold text-zinc-400 uppercase mt-1">PIN: {customer.transfer_pin || '----'}</p>
+      </td>
+      <td className="px-6 py-4">
+        <p className="text-sm font-bold text-zinc-900">{formatCurrency(customer.balance || 0)}</p>
+      </td>
+      <td className="px-6 py-4">
+        <div className="flex items-center gap-2">
+          <input 
+            type="number" 
+            placeholder="0.00" 
+            className="w-24 px-3 py-1.5 text-xs bg-zinc-50 border border-zinc-200 rounded-lg outline-none focus:ring-1 focus:ring-zinc-900"
+            value={amount}
+            onChange={e => setAmount(e.target.value)}
+          />
+          <button 
+            disabled={loading}
+            onClick={() => handleAdjustment('credit')}
+            className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+            title="Quick Credit"
+          >
+            <Plus className="w-4 h-4" />
+          </button>
+          <button 
+            disabled={loading}
+            onClick={() => handleAdjustment('debit')}
+            className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+            title="Quick Debit"
+          >
+            <Minus className="w-4 h-4" />
+          </button>
+        </div>
+      </td>
+      <td className="px-6 py-4 text-right">
+        <div className="flex items-center justify-end gap-1">
+          <button onClick={() => onAction(customer, 'edit')} className="p-2 text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 rounded-lg transition-all" title="Edit Profile"><Edit className="w-4 h-4" /></button>
+          <button onClick={() => onAction(customer, 'message')} className="p-2 text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 rounded-lg transition-all" title="Message"><MessageSquare className="w-4 h-4" /></button>
+          <button onClick={() => onAction(customer, 'reset')} className="p-2 text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 rounded-lg transition-all" title="Security Reset"><Key className="w-4 h-4" /></button>
+          <button onClick={() => onDelete(customer.id)} className="p-2 text-zinc-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all" title="Delete Account"><Trash2 className="w-4 h-4" /></button>
+        </div>
+      </td>
+    </tr>
+  );
+};
 
 const EditTransactionDateModal = ({ txn, onClose, onUpdate }: { txn: any, onClose: () => void, onUpdate: (id: string, date: string) => void }) => {
   const initialDate = new Date(txn.created_at);
@@ -124,13 +239,24 @@ const CreditDebitTool = ({ customers, onComplete }: { customers: any[], onComple
       const accountRef = doc(db, 'accounts', formData.userId);
       const accountSnap = await getDoc(accountRef);
       
-      if (!accountSnap.exists()) throw new Error("Account not found");
-      
-      const currentBalance = accountSnap.data().balance || 0;
-      const newBalance = currentBalance + adjustment;
-      
+      let currentBalance = 0;
       const batch = writeBatch(db);
-      batch.update(accountRef, { balance: newBalance });
+
+      if (!accountSnap.exists()) {
+        // Self-healing: Create account if missing
+        const accountNumber = "MS" + Math.floor(1000000000 + Math.random() * 9000000000);
+        batch.set(accountRef, {
+          user_id: formData.userId,
+          account_number: accountNumber,
+          balance: adjustment,
+          status: 'active',
+          created_at: new Date().toISOString()
+        });
+      } else {
+        currentBalance = accountSnap.data().balance || 0;
+        const newBalance = currentBalance + adjustment;
+        batch.update(accountRef, { balance: newBalance });
+      }
       
       const txnRef = doc(collection(db, 'transactions'));
       batch.set(txnRef, {
@@ -168,7 +294,9 @@ const CreditDebitTool = ({ customers, onComplete }: { customers: any[], onComple
         >
           <option value="">Select Customer</option>
           {customers.map(c => (
-            <option key={c.id} value={c.id}>{c.first_name} {c.last_name} ({c.account_number})</option>
+            <option key={c.id} value={c.id}>
+              {c.first_name} {c.last_name} ({c.account_number || 'No Account #'})
+            </option>
           ))}
         </select>
         <select 
@@ -309,7 +437,21 @@ const AdminSettingsView = ({ onFactoryReset }: { onFactoryReset: () => void }) =
 };
 
 const EditCustomerModal = ({ customer, onClose, onComplete }: any) => {
-  const [formData, setFormData] = useState(customer);
+  const [formData, setFormData] = useState({
+    ...customer,
+    first_name: customer.first_name || '',
+    last_name: customer.last_name || '',
+    email: customer.email || '',
+    phone: customer.phone || '',
+    address: customer.address || '',
+    status: customer.status || 'active',
+    balance: customer.balance || 0,
+    account_number: customer.account_number || ("MS" + Math.floor(1000000000 + Math.random() * 9000000000)),
+    transfer_pin: customer.transfer_pin || '',
+    card_number: customer.card_number || '',
+    card_expiry: customer.card_expiry || '',
+    card_cvv: customer.card_cvv || ''
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -327,16 +469,17 @@ const EditCustomerModal = ({ customer, onClose, onComplete }: any) => {
         status: formData.status
       });
       
-      // Update Account Info
+      // Update Account Info - Use set with merge: true in case account doc doesn't exist
       const accountRef = doc(db, 'accounts', customer.id);
-      batch.update(accountRef, {
+      batch.set(accountRef, {
+        user_id: customer.id,
         balance: formData.balance,
         account_number: formData.account_number,
         transfer_pin: formData.transfer_pin,
         card_number: formData.card_number,
         card_expiry: formData.card_expiry,
         card_cvv: formData.card_cvv
-      });
+      }, { merge: true });
       
       await batch.commit();
       alert('Customer updated successfully');
@@ -572,37 +715,44 @@ const AdminChatView = () => {
   const [input, setInput] = useState('');
   const [search, setSearch] = useState('');
 
-  useEffect(() => {
+  const fetchSessions = async () => {
     const q = query(collection(db, 'chat_sessions'), orderBy('updated_at', 'desc'));
-    const unsubscribe = onSnapshot(q, async (snap) => {
-      const sessionData = await Promise.all(snap.docs.map(async (d) => {
-        const data = d.data();
-        const userDoc = await getDoc(doc(db, 'users', data.customerId));
-        const userData = userDoc.data();
-        return { 
-          id: d.id, 
-          ...data, 
-          first_name: userData?.first_name, 
-          last_name: userData?.last_name, 
-          profile_picture: userData?.profile_picture 
-        };
-      }));
-      setSessions(sessionData);
-    });
-    return () => unsubscribe();
+    const snap = await getDocs(q);
+    const sessionData = await Promise.all(snap.docs.map(async (d) => {
+      const data = d.data();
+      const userDoc = await getDoc(doc(db, 'users', data.customerId));
+      const userData = userDoc.data();
+      return { 
+        id: d.id, 
+        ...data, 
+        first_name: userData?.first_name || 'Unknown', 
+        last_name: userData?.last_name || 'Customer', 
+        profile_picture: userData?.profile_picture 
+      };
+    }));
+    setSessions(sessionData);
+  };
+
+  const fetchMessages = async (sessionId: string) => {
+    if (!sessionId) return;
+    const q = query(
+      collection(db, 'chat_messages'), 
+      where('session_id', '==', sessionId)
+    );
+    const snap = await getDocs(q);
+    const msgs = snap.docs.map(d => d.data());
+    // Sort on client side to avoid composite index requirement
+    msgs.sort((a: any, b: any) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+    setMessages(msgs);
+  };
+
+  useEffect(() => {
+    fetchSessions();
   }, []);
 
   useEffect(() => {
     if (!activeSession) return;
-    const q = query(
-      collection(db, 'chat_messages'), 
-      where('session_id', '==', activeSession.id),
-      orderBy('created_at', 'asc')
-    );
-    const unsubscribe = onSnapshot(q, (snap) => {
-      setMessages(snap.docs.map(d => d.data()));
-    });
-    return () => unsubscribe();
+    fetchMessages(activeSession.id);
   }, [activeSession]);
 
   const sendMessage = async () => {
@@ -621,6 +771,8 @@ const AdminChatView = () => {
       last_message: text,
       updated_at: new Date().toISOString()
     });
+
+    await fetchMessages(activeSession.id);
   };
 
   const filteredSessions = sessions.filter(s => 
@@ -680,9 +832,15 @@ const AdminChatView = () => {
                 </div>
                 <div>
                   <p className="font-bold text-sm">{activeSession.first_name} {activeSession.last_name}</p>
-                  <p className="text-[10px] text-emerald-500 font-bold uppercase tracking-wider">Online</p>
+                  <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">Offline (Manual Refresh)</p>
                 </div>
               </div>
+              <button 
+                onClick={() => fetchMessages(activeSession.id)}
+                className="text-xs font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1"
+              >
+                <Activity className="w-3 h-3" /> Refresh
+              </button>
             </div>
             <div className="flex-1 overflow-y-auto p-6 space-y-4">
               {messages.map((msg, i) => (
@@ -741,7 +899,7 @@ interface AccountData {
 }
 
 const AdminDashboard = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [stats, setStats] = useState<any>(null);
   const [customers, setCustomers] = useState<any[]>([]);
   const [transactions, setTransactions] = useState<any[]>([]);
@@ -761,6 +919,7 @@ const AdminDashboard = () => {
 
   const fetchData = async () => {
     try {
+      console.log("Fetching admin data...");
       // Fetch Users
       const usersSnap = await getDocs(collection(db, 'users'));
       const usersList = usersSnap.docs.map(d => ({ id: d.id, ...d.data() } as UserData));
@@ -772,27 +931,43 @@ const AdminDashboard = () => {
       // Combine User + Account
       const combinedCustomers = usersList.map(u => {
         const acc = accountsList.find(a => a.user_id === u.id);
-        return { ...u, ...acc };
+        // Destructure to avoid overwriting user ID with account document ID
+        const { id: _accId, ...accData } = acc || {};
+        return { ...u, ...accData };
       }).filter(c => c.role !== 'admin');
       
       setCustomers(combinedCustomers);
 
-      // Fetch Transactions
-      const txnsSnap = await getDocs(query(collection(db, 'transactions'), orderBy('created_at', 'desc')));
+      // Fetch Transactions - Sort on client side
+      const txnsSnap = await getDocs(collection(db, 'transactions'));
       const txnsList = txnsSnap.docs.map(d => {
         const data = d.data();
         const user = usersList.find(u => u.id === data.user_id);
-        return { id: d.id, ...data, first_name: user?.first_name, last_name: user?.last_name };
+        return { 
+          id: d.id, 
+          ...data, 
+          first_name: user?.first_name, 
+          last_name: user?.last_name,
+          profile_picture: user?.profile_picture 
+        };
       });
+      txnsList.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
       setTransactions(txnsList);
 
-      // Fetch Loans
-      const loansSnap = await getDocs(query(collection(db, 'loans'), orderBy('created_at', 'desc')));
+      // Fetch Loans - Sort on client side
+      const loansSnap = await getDocs(collection(db, 'loans'));
       const loansList = loansSnap.docs.map(d => {
         const data = d.data();
         const user = usersList.find(u => u.id === data.user_id);
-        return { id: d.id, ...data, first_name: user?.first_name, last_name: user?.last_name };
+        return { 
+          id: d.id, 
+          ...data, 
+          first_name: user?.first_name, 
+          last_name: user?.last_name,
+          profile_picture: user?.profile_picture 
+        };
       });
+      loansList.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
       setLoans(loansList);
 
       // Calculate Stats
@@ -805,7 +980,7 @@ const AdminDashboard = () => {
       });
 
     } catch (err) {
-      console.error(err);
+      console.error("Error fetching admin data:", err);
     } finally {
       setLoading(false);
     }
@@ -829,8 +1004,23 @@ const AdminDashboard = () => {
   };
 
   const updateCustomerStatus = async (id: string, status: string) => {
-    await updateDoc(doc(db, 'users', id), { status });
-    fetchData();
+    try {
+      const batch = writeBatch(db);
+      batch.update(doc(db, 'users', id), { status });
+      
+      // Also update account status if it exists
+      const accountRef = doc(db, 'accounts', id);
+      const accountSnap = await getDoc(accountRef);
+      if (accountSnap.exists()) {
+        batch.update(accountRef, { status });
+      }
+      
+      await batch.commit();
+      fetchData();
+    } catch (err) {
+      console.error("Error updating customer status:", err);
+      alert("Failed to update status");
+    }
   };
 
   const approveTransaction = async (id: string) => {
@@ -870,43 +1060,53 @@ const AdminDashboard = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex flex-col gap-8">
         {/* Admin Horizontal Navigation */}
-        <nav className="w-full overflow-x-auto no-scrollbar">
-          <div className="bg-white rounded-2xl md:rounded-[2rem] border border-zinc-200 p-2 flex gap-2 shadow-sm items-center min-w-max md:min-w-0">
-            <div className="px-4 md:px-6 py-2 border-r border-zinc-100 hidden xl:flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-zinc-900 flex items-center justify-center text-white overflow-hidden">
-                {user?.profile_picture ? (
-                  <img src={user.profile_picture} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-                ) : (
-                  <ShieldCheck className="w-5 h-5" />
-                )}
+        <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center">
+          <nav className="flex-1 overflow-x-auto no-scrollbar">
+            <div className="bg-white rounded-2xl md:rounded-[2rem] border border-zinc-200 p-2 flex gap-2 shadow-sm items-center min-w-max">
+              <div className="px-4 md:px-6 py-2 border-r border-zinc-100 hidden xl:flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-zinc-900 flex items-center justify-center text-white overflow-hidden">
+                  {user?.profile_picture ? (
+                    <img src={user.profile_picture} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                  ) : (
+                    <ShieldCheck className="w-5 h-5" />
+                  )}
+                </div>
+                <p className="text-xs font-bold text-zinc-900 tracking-tight">Admin Panel</p>
               </div>
-              <p className="text-xs font-bold text-zinc-900 tracking-tight">Admin Panel</p>
+              <div className="flex gap-2">
+                {[
+                  { id: 'overview', icon: Activity, label: 'Overview' },
+                  { id: 'master', icon: Shield, label: 'Master Control' },
+                  { id: 'customers', icon: Users, label: 'Customers' },
+                  { id: 'transactions', icon: CreditCard, label: 'Transactions' },
+                  { id: 'loans', icon: TrendingUp, label: 'Loans' },
+                  { id: 'chat', icon: MessageSquare, label: 'Support' },
+                  { id: 'settings', icon: ShieldCheck, label: 'System' }
+                ].map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveTab(item.id)}
+                    className={`min-w-[100px] md:min-w-[110px] flex items-center justify-center gap-2 px-3 md:px-4 py-3 md:py-4 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold transition-all ${
+                      activeTab === item.id 
+                        ? 'bg-zinc-900 text-white shadow-xl shadow-zinc-200' 
+                        : 'text-zinc-500 hover:bg-zinc-50 hover:text-zinc-900'
+                    }`}
+                  >
+                    <item.icon className={`w-4 h-4 ${activeTab === item.id ? 'text-emerald-400' : ''}`} />
+                    {item.label}
+                  </button>
+                ))}
+              </div>
             </div>
-            <div className="flex flex-1 gap-2">
-              {[
-                { id: 'overview', icon: Activity, label: 'Overview' },
-                { id: 'customers', icon: Users, label: 'Customers' },
-                { id: 'transactions', icon: CreditCard, label: 'Transactions' },
-                { id: 'loans', icon: TrendingUp, label: 'Loans' },
-                { id: 'chat', icon: MessageSquare, label: 'Support' },
-                { id: 'settings', icon: ShieldCheck, label: 'System' }
-              ].map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => setActiveTab(item.id)}
-                  className={`flex-1 min-w-[100px] md:min-w-[110px] flex items-center justify-center gap-2 px-3 md:px-4 py-3 md:py-4 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold transition-all ${
-                    activeTab === item.id 
-                      ? 'bg-zinc-900 text-white shadow-xl shadow-zinc-200' 
-                      : 'text-zinc-500 hover:bg-zinc-50 hover:text-zinc-900'
-                  }`}
-                >
-                  <item.icon className={`w-4 h-4 ${activeTab === item.id ? 'text-emerald-400' : ''}`} />
-                  {item.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        </nav>
+          </nav>
+          <button
+            onClick={logout}
+            className="bg-white border border-zinc-200 px-8 py-4 rounded-2xl md:rounded-[2rem] text-sm font-bold text-red-600 hover:bg-red-50 transition-all flex items-center justify-center gap-2 shadow-sm whitespace-nowrap"
+          >
+            <LogOut className="w-4 h-4" />
+            Logout
+          </button>
+        </div>
 
         {/* Admin Content */}
         <main className="flex-1 min-w-0">
@@ -954,8 +1154,12 @@ const AdminDashboard = () => {
                     {transactions.filter(t => t.status === 'pending').map((txn) => (
                       <div key={txn.id} className="p-6 md:p-8 flex items-center justify-between hover:bg-zinc-50 transition-colors min-w-[600px] md:min-w-0">
                         <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 rounded-2xl bg-zinc-100 flex items-center justify-center text-zinc-600">
-                            <ArrowRightLeft className="w-6 h-6" />
+                          <div className="w-12 h-12 rounded-2xl bg-zinc-100 flex items-center justify-center border border-zinc-200 overflow-hidden">
+                            {txn.profile_picture ? (
+                              <img src={txn.profile_picture} className="w-full h-full object-cover" />
+                            ) : (
+                              <ArrowRightLeft className="w-6 h-6 text-zinc-400" />
+                            )}
                           </div>
                           <div>
                             <p className="font-bold text-zinc-900">{txn.first_name} {txn.last_name}</p>
@@ -990,10 +1194,19 @@ const AdminDashboard = () => {
                   <div className="divide-y divide-zinc-100">
                     {loans.filter(l => l.status === 'pending').map((loan) => (
                       <div key={loan.id} className="p-6 flex items-center justify-between hover:bg-zinc-50 transition-colors">
-                        <div>
-                          <p className="font-bold text-zinc-900">{loan.first_name} {loan.last_name}</p>
-                          <p className="text-sm text-zinc-500">{loan.purpose}</p>
-                          <p className="text-xs text-zinc-400 mt-1">{formatCurrency(loan.amount)}</p>
+                        <div className="flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-xl bg-zinc-100 flex items-center justify-center border border-zinc-200 overflow-hidden">
+                            {loan.profile_picture ? (
+                              <img src={loan.profile_picture} className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="text-zinc-400 font-bold text-sm">{loan.first_name.charAt(0)}</div>
+                            )}
+                          </div>
+                          <div>
+                            <p className="font-bold text-zinc-900">{loan.first_name} {loan.last_name}</p>
+                            <p className="text-sm text-zinc-500">{loan.purpose}</p>
+                            <p className="text-xs text-zinc-400 mt-1">{formatCurrency(loan.amount)}</p>
+                          </div>
                         </div>
                         <div className="flex gap-2">
                           <button onClick={() => updateLoanStatus(loan.id, 'approved')} className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg"><CheckCircle className="w-5 h-5" /></button>
@@ -1005,6 +1218,62 @@ const AdminDashboard = () => {
                       <div className="p-12 text-center text-zinc-500 italic">No pending loan applications.</div>
                     )}
                   </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'master' && (
+            <div className="space-y-8">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-3xl font-bold text-zinc-900 tracking-tight">Master Control Panel</h2>
+                  <p className="text-zinc-500">All-in-one management for all registered accounts.</p>
+                </div>
+                <div className="relative w-full md:w-96">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
+                  <input 
+                    className="w-full pl-12 pr-4 py-4 bg-white border border-zinc-200 rounded-2xl text-sm outline-none focus:ring-2 focus:ring-zinc-900 transition-all shadow-sm" 
+                    placeholder="Search accounts..." 
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="bg-white rounded-3xl border border-zinc-200 overflow-hidden shadow-sm">
+                <div className="overflow-x-auto no-scrollbar">
+                  <table className="w-full text-left border-collapse min-w-[900px]">
+                    <thead>
+                      <tr className="bg-zinc-50/50">
+                        <th className="px-6 py-4 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Customer</th>
+                        <th className="px-6 py-4 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Account & PIN</th>
+                        <th className="px-6 py-4 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Balance</th>
+                        <th className="px-6 py-4 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Quick Adjustment</th>
+                        <th className="px-6 py-4 text-[10px] font-bold text-zinc-400 uppercase tracking-widest text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {customers.filter(c => 
+                        `${c.first_name} ${c.last_name}`.toLowerCase().includes(search.toLowerCase()) ||
+                        c.email.toLowerCase().includes(search.toLowerCase()) ||
+                        (c.account_number && c.account_number.includes(search))
+                      ).map((c) => (
+                        <MasterControlRow 
+                          key={c.id} 
+                          customer={c} 
+                          onUpdate={fetchData} 
+                          onDelete={deleteCustomer}
+                          formatCurrency={formatCurrency}
+                          onAction={(cust: any, type: string) => {
+                            if (type === 'edit') setEditingCustomer(cust);
+                            if (type === 'message') setSendingMessageTo(cust);
+                            if (type === 'reset') setResettingPassword(cust);
+                          }}
+                        />
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
@@ -1110,28 +1379,6 @@ const AdminDashboard = () => {
                 </div>
               </div>
               <CreditDebitTool customers={customers} onComplete={fetchData} />
-
-              {editingCustomer && (
-                <EditCustomerModal 
-                  customer={editingCustomer} 
-                  onClose={() => setEditingCustomer(null)} 
-                  onComplete={fetchData} 
-                />
-              )}
-
-              {resettingPassword && (
-                <ResetPasswordModal 
-                  customer={resettingPassword} 
-                  onClose={() => setResettingPassword(null)} 
-                />
-              )}
-
-              {sendingMessageTo && (
-                <SendMessageModal 
-                  customer={sendingMessageTo} 
-                  onClose={() => setSendingMessageTo(null)} 
-                />
-              )}
             </div>
           )}
 
@@ -1254,6 +1501,28 @@ const AdminDashboard = () => {
               txn={editingTxnDate} 
               onClose={() => setEditingTxnDate(null)} 
               onUpdate={updateTransactionDate}
+            />
+          )}
+
+          {editingCustomer && (
+            <EditCustomerModal 
+              customer={editingCustomer} 
+              onClose={() => setEditingCustomer(null)} 
+              onComplete={fetchData} 
+            />
+          )}
+
+          {resettingPassword && (
+            <ResetPasswordModal 
+              customer={resettingPassword} 
+              onClose={() => setResettingPassword(null)} 
+            />
+          )}
+
+          {sendingMessageTo && (
+            <SendMessageModal 
+              customer={sendingMessageTo} 
+              onClose={() => setSendingMessageTo(null)} 
             />
           )}
         </main>

@@ -40,40 +40,48 @@ export default function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="min-h-screen font-sans text-zinc-900">
-          <Navbar />
-          <main>
-            <Routes>
-              <Route path="/" element={<PublicSiteRoute><Home /></PublicSiteRoute>} />
-              <Route path="/about" element={<PublicSiteRoute><About /></PublicSiteRoute>} />
-              <Route path="/services" element={<PublicSiteRoute><Services /></PublicSiteRoute>} />
-              <Route path="/contact" element={<PublicSiteRoute><Contact /></PublicSiteRoute>} />
-              <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-              <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
-              <Route path="/terms" element={<Terms />} />
-              <Route path="/privacy" element={<Privacy />} />
-              <Route 
-                path="/dashboard/*" 
-                element={
-                  <ProtectedRoute>
-                    <CustomerDashboard />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/admin/*" 
-                element={
-                  <ProtectedRoute adminOnly>
-                    <AdminDashboard />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route path="*" element={<Navigate to="/" />} />
-            </Routes>
-          </main>
-          <Footer />
-        </div>
+        <AppContent />
       </Router>
     </AuthProvider>
+  );
+}
+
+function AppContent() {
+  const { isAuthenticated } = useAuth();
+  
+  return (
+    <div className="min-h-screen font-sans text-zinc-900">
+      <Navbar />
+      <main>
+        <Routes>
+          <Route path="/" element={<PublicSiteRoute><Home /></PublicSiteRoute>} />
+          <Route path="/about" element={<PublicSiteRoute><About /></PublicSiteRoute>} />
+          <Route path="/services" element={<PublicSiteRoute><Services /></PublicSiteRoute>} />
+          <Route path="/contact" element={<PublicSiteRoute><Contact /></PublicSiteRoute>} />
+          <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+          <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+          <Route path="/terms" element={<PublicSiteRoute><Terms /></PublicSiteRoute>} />
+          <Route path="/privacy" element={<PublicSiteRoute><Privacy /></PublicSiteRoute>} />
+          <Route 
+            path="/dashboard/*" 
+            element={
+              <ProtectedRoute>
+                <CustomerDashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin/*" 
+            element={
+              <ProtectedRoute adminOnly>
+                <AdminDashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </main>
+      {!isAuthenticated && <Footer />}
+    </div>
   );
 }

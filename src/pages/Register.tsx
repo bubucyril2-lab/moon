@@ -83,8 +83,8 @@ const Register = () => {
         created_at: new Date().toISOString()
       });
 
-      alert('Registration successful! Your account is pending admin approval.');
-      navigate('/login');
+      // No alert, just push to dashboard
+      navigate('/dashboard', { replace: true });
     } catch (err: any) {
       setError(err.message || 'Registration failed');
     } finally {

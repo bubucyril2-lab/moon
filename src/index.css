@@ -28,35 +28,34 @@ body {
 
 .goog-te-gadget {
   font-family: inherit !important;
-  font-size: 0 !important;
-  color: transparent !important;
-  line-height: 0 !important;
-  padding: 0 !important;
-  margin: 0 !important;
+  font-size: 12px !important;
+  color: #666 !important;
+  line-height: normal !important;
   background: transparent !important;
 }
 
 .goog-te-gadget .goog-te-combo {
   margin: 0 !important;
-  padding: 2px 6px !important;
-  border-radius: 6px !important;
+  padding: 4px 8px !important;
+  border-radius: 8px !important;
   border: 1px solid rgba(0, 0, 0, 0.1) !important;
-  background: rgba(0, 0, 0, 0.05) !important;
-  font-size: 10px !important;
-  font-weight: 600 !important;
+  background: white !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
   color: #18181b !important;
   outline: none !important;
   cursor: pointer !important;
   transition: all 0.2s ease !important;
-  line-height: normal !important;
   display: inline-block !important;
   visibility: visible !important;
-  min-width: 80px !important;
+  opacity: 1 !important;
+  min-width: 120px !important;
 }
 
+/* Ensure the dropdown options are readable */
 .goog-te-gadget .goog-te-combo option {
-  background: #18181b !important;
-  color: white !important;
+  background: white !important;
+  color: #18181b !important;
 }
 
 .goog-te-gadget span, 
