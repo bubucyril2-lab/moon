@@ -84,7 +84,7 @@ const Navbar = () => {
   }, [location.pathname, isAuthenticated]); // Re-run on navigation and auth changes
 
   return (
-    <nav className="sticky top-0 z-50">
+    <nav className={`sticky top-0 z-50 ${isAuthenticated ? 'lg:hidden' : ''}`}>
       {/* Top Utility Bar */}
       <div className="bg-zinc-900 text-white py-2 border-b border-white/5 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center gap-2">

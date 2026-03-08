@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Navbar from './components/Navbar';
+import Sidebar from './components/Sidebar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
 import About from './pages/About';
@@ -50,9 +51,10 @@ function AppContent() {
   const { isAuthenticated } = useAuth();
   
   return (
-    <div className="min-h-screen font-sans text-zinc-900">
+    <div className={`min-h-screen font-sans text-zinc-900 ${isAuthenticated ? 'lg:flex' : ''}`}>
       <Navbar />
-      <main>
+      {isAuthenticated && <Sidebar />}
+      <main className={`flex-1 min-w-0 ${isAuthenticated ? 'h-screen overflow-y-auto no-scrollbar' : ''}`}>
         <Routes>
           <Route path="/" element={<PublicSiteRoute><Home /></PublicSiteRoute>} />
           <Route path="/about" element={<PublicSiteRoute><About /></PublicSiteRoute>} />

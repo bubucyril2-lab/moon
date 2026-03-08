@@ -1169,58 +1169,6 @@ const AdminDashboard = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <div className="flex flex-col gap-10">
-        {/* Admin Horizontal Navigation */}
-        <div className="flex flex-col md:flex-row gap-6 items-stretch md:items-center max-w-full">
-          <nav className="flex-1 overflow-x-auto no-scrollbar max-w-full">
-            <div className="bg-white rounded-3xl border border-zinc-200 p-2.5 flex gap-2 shadow-sm items-center min-w-max max-w-full">
-              <div className="px-6 py-3 border-r border-zinc-100 hidden xl:flex items-center gap-4">
-                <div className="w-10 h-10 rounded-2xl bg-zinc-900 flex items-center justify-center text-white shadow-lg shadow-zinc-200 overflow-hidden">
-                  {user?.profile_picture ? (
-                    <img src={user.profile_picture} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-                  ) : (
-                    <ShieldCheck className="w-6 h-6" />
-                  )}
-                </div>
-                <div>
-                  <p className="text-xs font-black text-zinc-900 tracking-tight">Admin Console</p>
-                  <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">v2.4.0</p>
-                </div>
-              </div>
-              <div className="flex gap-2">
-                {[
-                  { id: 'overview', icon: Activity, label: 'Overview' },
-                  { id: 'master', icon: Shield, label: 'Master' },
-                  { id: 'customers', icon: Users, label: 'Users' },
-                  { id: 'transactions', icon: ArrowRightLeft, label: 'Ledger' },
-                  { id: 'loans', icon: TrendingUp, label: 'Credit' },
-                  { id: 'chat', icon: MessageSquare, label: 'Support' },
-                  { id: 'settings', icon: Settings, label: 'System' }
-                ].map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => setActiveTab(item.id)}
-                    className={`min-w-[100px] md:min-w-[120px] flex items-center justify-center gap-2.5 px-4 py-4 rounded-[1.25rem] text-xs md:text-sm font-black transition-all ${
-                      activeTab === item.id 
-                        ? 'bg-zinc-900 text-white shadow-xl shadow-zinc-200' 
-                        : 'text-zinc-500 hover:bg-zinc-50 hover:text-zinc-900'
-                    }`}
-                  >
-                    <item.icon className={`w-4 h-4 ${activeTab === item.id ? 'text-emerald-400' : ''}`} />
-                    {item.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </nav>
-          <button
-            onClick={logout}
-            className="bg-white border border-zinc-200 px-10 py-5 rounded-[1.5rem] text-sm font-black text-red-600 hover:bg-red-50 transition-all flex items-center justify-center gap-3 shadow-sm whitespace-nowrap"
-          >
-            <LogOut className="w-4 h-4" />
-            Sign Out
-          </button>
-        </div>
-
         {/* Admin Content */}
         <main className="flex-1 min-w-0">
           {activeTab === 'overview' && (

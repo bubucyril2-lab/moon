@@ -210,43 +210,8 @@ const CustomerDashboard = () => {
                 <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Server Time</p>
                 <p className="text-sm font-mono font-bold text-zinc-600">{new Date().toLocaleTimeString()}</p>
               </div>
-              <button
-                onClick={logout}
-                className="bg-white border border-zinc-200 px-5 py-3 rounded-2xl text-sm font-bold text-red-600 hover:bg-red-50 transition-all flex items-center gap-2 shadow-sm"
-              >
-                <LogOut className="w-4 h-4" />
-                <span className="hidden sm:inline">Sign Out</span>
-              </button>
             </div>
           </div>
-
-          {/* Navigation Bar */}
-          <nav className="sticky top-20 z-40 max-w-full">
-            <div className="bg-white/80 backdrop-blur-xl rounded-2xl md:rounded-3xl border border-zinc-200/50 p-1.5 flex gap-1 shadow-xl shadow-zinc-200/50 overflow-x-auto no-scrollbar max-w-full">
-              {[
-                { id: 'overview', icon: LayoutDashboard, label: 'Overview' },
-                { id: 'transfers', icon: Send, label: 'Transfers' },
-                { id: 'beneficiaries', icon: Users, label: 'Beneficiaries' },
-                { id: 'history', icon: History, label: 'History' },
-                { id: 'loans', icon: TrendingUp, label: 'Loans' },
-                { id: 'chat', icon: MessageSquare, label: 'Support' },
-                { id: 'settings', icon: Settings, label: 'Settings' }
-              ].map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => setActiveTab(item.id)}
-                  className={`flex items-center justify-center gap-2 px-5 py-3 rounded-xl md:rounded-2xl text-sm font-bold transition-all whitespace-nowrap ${
-                    activeTab === item.id 
-                      ? 'bg-zinc-900 text-white shadow-lg shadow-zinc-900/20' 
-                      : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50'
-                  }`}
-                >
-                  <item.icon className={`w-4 h-4 ${activeTab === item.id ? 'text-emerald-400' : ''}`} />
-                  {item.label}
-                </button>
-              ))}
-            </div>
-          </nav>
 
           {/* Main Content Area */}
           <main className="min-h-[600px]">
