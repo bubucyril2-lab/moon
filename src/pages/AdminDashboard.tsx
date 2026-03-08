@@ -28,6 +28,7 @@ import {
   Calendar,
   LogOut
 } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { formatCurrency } from '../lib/utils';
 import { 
@@ -1009,7 +1010,12 @@ const AdminDashboard = () => {
   const [transactions, setTransactions] = useState<any[]>([]);
   const [loans, setLoans] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('overview');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = searchParams.get('tab') || 'overview';
+
+  const setActiveTab = (tab: string) => {
+    setSearchParams({ tab });
+  };
   const [editingCustomer, setEditingCustomer] = useState<any>(null);
   const [resettingPassword, setResettingPassword] = useState<any>(null);
   const [sendingMessageTo, setSendingMessageTo] = useState<any>(null);

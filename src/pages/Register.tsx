@@ -4,7 +4,7 @@ import { motion } from 'motion/react';
 import { User, Mail, Phone, MapPin, Lock, Camera, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc, collection, addDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL, uploadString } from 'firebase/storage';
 import { auth, db, storage } from '../lib/firebase';
 
 const Register = () => {
@@ -48,9 +48,9 @@ const Register = () => {
 
       // 2. Upload Profile Picture if exists
       let profilePictureUrl = null;
-      if (profilePic) {
+      if (preview) {
         const storageRef = ref(storage, `profiles/${user.uid}`);
-        await uploadBytes(storageRef, profilePic);
+        await uploadString(storageRef, preview, 'data_url');
         profilePictureUrl = await getDownloadURL(storageRef);
       }
 

@@ -58,7 +58,7 @@ import {
   writeBatch,
   limit
 } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL, uploadString } from 'firebase/storage';
 import { 
   updatePassword, 
   updateEmail, 
@@ -67,11 +67,18 @@ import {
 } from 'firebase/auth';
 import { db, storage, auth } from '../lib/firebase';
 
+import { useSearchParams } from 'react-router-dom';
+
 const CustomerDashboard = () => {
   const { user, logout } = useAuth();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('overview');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = searchParams.get('tab') || 'overview';
+
+  const setActiveTab = (tab: string) => {
+    setSearchParams({ tab });
+  };
 
   useEffect(() => {
     if (!user) return;
@@ -1419,8 +1426,14 @@ const SettingsView = () => {
   const { user } = useAuth();
   const [profile, setProfile] = useState<any>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [security, setSecurity] = useState({ currentPassword: '', newPassword: '', pin: '' });
-  const [loading, setLoading] = useState(false);
+  const [loadingStates, setLoadingStates] = useState({
+    personal: false,
+    email: false,
+    picture: false,
+    security: false
+  });
   const [successStates, setSuccessStates] = useState({ personal: false, email: false, picture: false, security: false });
 
   useEffect(() => { 
@@ -1436,37 +1449,43 @@ const SettingsView = () => {
 
   const fetchProfile = async () => {
     if (!user) return;
-    const userDoc = await getDoc(doc(db, 'users', user.id));
-    setProfile(userDoc.data());
+    try {
+      const userDoc = await getDoc(doc(db, 'users', user.id));
+      if (userDoc.exists()) {
+        setProfile(userDoc.data());
+      }
+    } catch (err) {
+      console.error("Error fetching profile:", err);
+    }
   };
 
   const handlePersonalUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
-    setLoading(true);
+    setLoadingStates(prev => ({ ...prev, personal: true }));
     const formData = new FormData(e.target as HTMLFormElement);
     const updates = {
-      first_name: formData.get('first_name'),
-      last_name: formData.get('last_name'),
-      phone: formData.get('phone'),
-      address: formData.get('address'),
+      first_name: formData.get('first_name') as string,
+      last_name: formData.get('last_name') as string,
+      phone: formData.get('phone') as string,
+      address: formData.get('address') as string,
     };
 
     try {
       await updateDoc(doc(db, 'users', user.id), updates);
       triggerSuccess('personal');
-      fetchProfile();
+      await fetchProfile();
     } catch (err: any) {
-      alert(err.message);
+      alert(err.message || "Failed to update personal information");
     } finally {
-      setLoading(false);
+      setLoadingStates(prev => ({ ...prev, personal: false }));
     }
   };
 
   const handleEmailUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user || !auth.currentUser) return;
-    setLoading(true);
+    setLoadingStates(prev => ({ ...prev, email: true }));
     const formData = new FormData(e.target as HTMLFormElement);
     const newEmail = formData.get('email') as string;
 
@@ -1476,6 +1495,7 @@ const SettingsView = () => {
           await updateEmail(auth.currentUser, newEmail);
           await updateDoc(doc(db, 'users', user.id), { email: newEmail });
           triggerSuccess('email');
+          await fetchProfile();
         } catch (emailErr: any) {
           if (emailErr.code === 'auth/requires-recent-login') {
             throw new Error('Please logout and login again to change your email address for security reasons.');
@@ -1483,41 +1503,48 @@ const SettingsView = () => {
           throw emailErr;
         }
       }
-      fetchProfile();
     } catch (err: any) {
-      alert(err.message);
+      alert(err.message || "Failed to update email");
     } finally {
-      setLoading(false);
+      setLoadingStates(prev => ({ ...prev, email: false }));
     }
   };
 
   const handlePictureUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return;
-    const fileInput = (e.target as HTMLFormElement).querySelector('input[name="profile_picture"]') as HTMLInputElement;
-    const file = fileInput?.files?.[0];
-    if (!file) return;
+    if (!user || !previewImage) return;
 
-    setLoading(true);
+    setLoadingStates(prev => ({ ...prev, picture: true }));
     try {
       const fileRef = ref(storage, `profiles/${user.id}`);
-      await uploadBytes(fileRef, file);
+      
+      // Use uploadString with data_url which is often more reliable in sandboxed environments
+      const uploadPromise = uploadString(fileRef, previewImage, 'data_url');
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error("Upload timed out. This may be due to a slow connection or a large file. Please try again with a smaller image.")), 60000)
+      );
+
+      await Promise.race([uploadPromise, timeoutPromise]);
+      
       const profile_picture = await getDownloadURL(fileRef);
       await updateDoc(doc(db, 'users', user.id), { profile_picture });
+      
       triggerSuccess('picture');
       setPreviewImage(null);
-      fetchProfile();
+      setSelectedFile(null);
+      await fetchProfile();
     } catch (err: any) {
-      alert(err.message);
+      console.error("Picture upload error:", err);
+      alert(err.message || "Failed to upload profile picture. Please try a smaller image or check your connection.");
     } finally {
-      setLoading(false);
+      setLoadingStates(prev => ({ ...prev, picture: false }));
     }
   };
 
   const handleSecurityUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user || !auth.currentUser) return;
-    setLoading(true);
+    setLoadingStates(prev => ({ ...prev, security: true }));
     try {
       // Re-authenticate if password change is requested
       if (security.newPassword) {
@@ -1532,9 +1559,9 @@ const SettingsView = () => {
       triggerSuccess('security');
       setSecurity({ currentPassword: '', newPassword: '', pin: '' });
     } catch (err: any) {
-      alert(err.message);
+      alert(err.message || "Failed to update security settings");
     } finally {
-      setLoading(false);
+      setLoadingStates(prev => ({ ...prev, security: false }));
     }
   };
 
@@ -1585,6 +1612,12 @@ const SettingsView = () => {
                       onChange={(e) => {
                         const file = e.target.files?.[0];
                         if (file) {
+                          if (file.size > 2 * 1024 * 1024) {
+                            alert("File is too large. Maximum size is 2MB.");
+                            e.target.value = '';
+                            return;
+                          }
+                          setSelectedFile(file);
                           const reader = new FileReader();
                           reader.onloadend = () => {
                             setPreviewImage(reader.result as string);
@@ -1602,11 +1635,22 @@ const SettingsView = () => {
                 </div>
               </div>
               {previewImage && (
-                <button disabled={loading} className={`w-full py-4 rounded-2xl font-black text-lg transition-all disabled:opacity-50 shadow-xl flex items-center justify-center gap-2 ${
-                  successStates.picture ? 'bg-emerald-100 text-emerald-600 shadow-emerald-100' : 'bg-emerald-600 text-white shadow-emerald-900/20 hover:bg-emerald-700'
-                }`}>
-                  {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : successStates.picture ? <><CheckCircle2 className="w-6 h-6" /> Picture Saved</> : 'Save New Picture'}
-                </button>
+                <div className="flex gap-4">
+                  <button disabled={loadingStates.picture} className={`flex-1 py-4 rounded-2xl font-black text-lg transition-all disabled:opacity-50 shadow-xl flex items-center justify-center gap-2 ${
+                    successStates.picture ? 'bg-emerald-100 text-emerald-600 shadow-emerald-100' : 'bg-emerald-600 text-white shadow-emerald-900/20 hover:bg-emerald-700'
+                  }`}>
+                    {loadingStates.picture ? <Loader2 className="w-6 h-6 animate-spin" /> : successStates.picture ? <><CheckCircle2 className="w-6 h-6" /> Picture Saved</> : 'Save New Picture'}
+                  </button>
+                  {!successStates.picture && !loadingStates.picture && (
+                    <button 
+                      type="button"
+                      onClick={() => { setPreviewImage(null); setSelectedFile(null); }}
+                      className="px-6 py-4 bg-zinc-100 text-zinc-600 rounded-2xl font-black hover:bg-zinc-200 transition-all"
+                    >
+                      Cancel
+                    </button>
+                  )}
+                </div>
               )}
             </form>
           </div>
@@ -1645,10 +1689,10 @@ const SettingsView = () => {
                 <textarea name="address" defaultValue={profile?.address} className="w-full px-6 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none font-medium h-32 resize-none" />
               </div>
 
-              <button disabled={loading} className={`w-full py-5 rounded-2xl font-black text-lg transition-all disabled:opacity-50 shadow-xl flex items-center justify-center gap-2 ${
+              <button disabled={loadingStates.personal} className={`w-full py-5 rounded-2xl font-black text-lg transition-all disabled:opacity-50 shadow-xl flex items-center justify-center gap-2 ${
                 successStates.personal ? 'bg-emerald-50 text-emerald-600 shadow-emerald-50' : 'bg-zinc-900 text-white shadow-zinc-900/20 hover:bg-zinc-800'
               }`}>
-                {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : successStates.personal ? <><CheckCircle2 className="w-6 h-6" /> Details Updated</> : 'Update Personal Info'}
+                {loadingStates.personal ? <Loader2 className="w-6 h-6 animate-spin" /> : successStates.personal ? <><CheckCircle2 className="w-6 h-6" /> Details Updated</> : 'Update Personal Info'}
               </button>
             </form>
           </div>
@@ -1671,10 +1715,10 @@ const SettingsView = () => {
                 <input name="email" defaultValue={profile?.email} className="w-full px-6 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none font-bold" />
               </div>
 
-              <button disabled={loading} className={`w-full py-5 rounded-2xl font-black text-lg transition-all disabled:opacity-50 shadow-xl flex items-center justify-center gap-2 ${
+              <button disabled={loadingStates.email} className={`w-full py-5 rounded-2xl font-black text-lg transition-all disabled:opacity-50 shadow-xl flex items-center justify-center gap-2 ${
                 successStates.email ? 'bg-emerald-50 text-emerald-600 shadow-emerald-50' : 'bg-zinc-900 text-white shadow-zinc-900/20 hover:bg-zinc-800'
               }`}>
-                {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : successStates.email ? <><CheckCircle2 className="w-6 h-6" /> Email Updated</> : 'Update Email'}
+                {loadingStates.email ? <Loader2 className="w-6 h-6 animate-spin" /> : successStates.email ? <><CheckCircle2 className="w-6 h-6" /> Email Updated</> : 'Update Email'}
               </button>
             </form>
           </div>
@@ -1705,10 +1749,10 @@ const SettingsView = () => {
                 </div>
               </div>
 
-              <button disabled={loading} className={`w-full py-5 rounded-2xl font-black text-lg transition-all shadow-xl flex items-center justify-center gap-2 ${
+              <button disabled={loadingStates.security} className={`w-full py-5 rounded-2xl font-black text-lg transition-all shadow-xl flex items-center justify-center gap-2 ${
                 successStates.security ? 'bg-emerald-50 text-emerald-600 shadow-emerald-50' : 'bg-zinc-900 text-white shadow-zinc-900/20 hover:bg-zinc-800'
               }`}>
-                {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : successStates.security ? <><CheckCircle2 className="w-6 h-6" /> Security Updated</> : 'Update Security Settings'}
+                {loadingStates.security ? <Loader2 className="w-6 h-6 animate-spin" /> : successStates.security ? <><CheckCircle2 className="w-6 h-6" /> Security Updated</> : 'Update Security Settings'}
               </button>
             </form>
           </div>
