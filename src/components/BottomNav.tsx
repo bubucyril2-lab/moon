@@ -41,7 +41,7 @@ const BottomNav = () => {
   const dashboardPath = isAdmin ? "/admin" : "/dashboard";
 
   return (
-    <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-t border-zinc-200 px-2 py-3 z-[100] flex items-center justify-around shadow-[0_-8px_30px_rgb(0,0,0,0.04)]">
+    <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-amber-50/40 backdrop-blur-xl border-t border-zinc-200 px-2 py-3 z-[100] flex items-center justify-around shadow-[0_-8px_30px_rgb(0,0,0,0.04)]">
       {features.slice(0, 5).map((item) => (
         <Link
           key={item.id}

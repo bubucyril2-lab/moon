@@ -172,7 +172,11 @@ const CustomerDashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] text-zinc-900">
+    <div className="min-h-screen bg-transparent text-zinc-900 relative overflow-hidden">
+      {/* Decorative background elements */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-amber-100/20 blur-[120px] rounded-full -z-10" />
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-yellow-50/30 blur-[120px] rounded-full -z-10" />
+      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
         <div className="flex flex-col gap-8">
           {/* Header Section */}
@@ -816,7 +820,7 @@ const BeneficiaryView = () => {
                 <div className="w-16 h-16 rounded-[1.5rem] bg-zinc-900 text-white flex items-center justify-center font-black text-3xl shadow-2xl shadow-zinc-900/30 group-hover:bg-emerald-500 transition-colors">
                   {b.name.charAt(0)}
                 </div>
-                <button onClick={() => deleteBeneficiary(b.id)} className="w-10 h-10 flex items-center justify-center text-zinc-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all opacity-0 group-hover:opacity-100">
+                <button onClick={() => deleteBeneficiary(b.id)} className="w-10 h-10 flex items-center justify-center text-zinc-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all">
                   <Trash2 className="w-5 h-5" />
                 </button>
               </div>
@@ -1364,7 +1368,7 @@ const HistoryView = ({ transactions }: { transactions: any[] }) => {
                   <td className="px-8 py-6 text-right">
                     <button 
                       onClick={() => downloadReceipt(txn.id)}
-                      className="w-10 h-10 rounded-xl bg-zinc-50 flex items-center justify-center text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition-all opacity-0 group-hover:opacity-100"
+                      className="w-10 h-10 rounded-xl bg-zinc-50 flex items-center justify-center text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition-all"
                     >
                       <ArrowDownLeft className="w-5 h-5 rotate-180" />
                     </button>

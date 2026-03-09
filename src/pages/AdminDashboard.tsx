@@ -163,7 +163,7 @@ const MasterControlRow = ({ customer, onUpdate, onDelete, onAction, formatCurren
         </div>
       </td>
       <td className="px-8 py-6 text-right">
-        <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all">
+        <div className="flex items-center justify-end gap-1 transition-all">
           <button onClick={() => onAction(customer, 'edit')} className="p-2.5 text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 rounded-xl transition-all" title="Edit Profile"><Edit className="w-4 h-4" /></button>
           <button onClick={() => onAction(customer, 'message')} className="p-2.5 text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 rounded-xl transition-all" title="Message"><MessageSquare className="w-4 h-4" /></button>
           <button onClick={() => onAction(customer, 'reset')} className="p-2.5 text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 rounded-xl transition-all" title="Security Reset"><Key className="w-4 h-4" /></button>
@@ -1176,7 +1176,11 @@ const AdminDashboard = () => {
   if (loading) return <div className="flex items-center justify-center h-[80vh]">Loading Admin Panel...</div>;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 relative overflow-hidden">
+      {/* Decorative background elements */}
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-amber-100/20 blur-[130px] rounded-full -z-10" />
+      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-yellow-50/40 blur-[130px] rounded-full -z-10" />
+      
       <div className="flex flex-col gap-10">
         {/* Admin Content */}
         <main className="flex-1 min-w-0">
@@ -1451,7 +1455,7 @@ const AdminDashboard = () => {
                             }`}>{c.status}</span>
                           </td>
                           <td className="px-8 py-7">
-                            <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                            <div className="flex justify-end gap-1 transition-all">
                               {c.status === 'pending' && (
                                 <button onClick={() => updateCustomerStatus(c.id, 'active')} className="p-2.5 text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all" title="Approve"><CheckCircle className="w-5 h-5" /></button>
                               )}

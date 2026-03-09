@@ -51,7 +51,7 @@ const Sidebar = () => {
   const dashboardPath = isAdmin ? "/admin" : "/dashboard";
 
   return (
-    <aside className="hidden lg:flex flex-col w-72 bg-white border-r border-zinc-200 h-screen sticky top-0 overflow-hidden">
+    <aside className="hidden lg:flex flex-col w-72 bg-amber-50/30 backdrop-blur-xl border-r border-zinc-200 h-screen sticky top-0 overflow-hidden">
       <div className="p-8 border-b border-zinc-100">
         <Link to="/" className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-200">

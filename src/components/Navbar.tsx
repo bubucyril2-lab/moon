@@ -113,7 +113,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      <div className="bg-white/80 backdrop-blur-xl border-b border-zinc-200">
+      <div className="bg-amber-50/40 backdrop-blur-xl border-b border-zinc-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
           <div className="flex items-center gap-4">
@@ -205,7 +205,7 @@ const Navbar = () => {
           animate={{ x: 0 }}
           exit={{ x: '-100%' }}
           transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-          className="absolute left-0 top-0 bottom-0 w-[85%] max-w-sm bg-white shadow-2xl flex flex-col overflow-hidden"
+          className="absolute left-0 top-0 bottom-0 w-[85%] max-w-sm bg-amber-50/95 backdrop-blur-2xl shadow-2xl flex flex-col overflow-hidden"
         >
           <div className="p-6 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/50">
             <div className="flex items-center gap-2">
