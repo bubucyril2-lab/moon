@@ -1150,8 +1150,9 @@ const ChatView = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto h-[700px] bg-white rounded-[2.5rem] border border-zinc-200/60 shadow-2xl shadow-zinc-200/50 flex overflow-hidden">
-      {/* Sidebar - Support Info */}
+    <div className="max-w-6xl mx-auto">
+      <div className="bg-white rounded-[2.5rem] border border-zinc-200/60 shadow-2xl shadow-zinc-200/50 flex overflow-hidden h-[800px]">
+        {/* Sidebar - Support Info */}
       <div className="hidden md:flex w-80 border-r border-zinc-100 flex-col bg-zinc-50/50">
         <div className="p-8">
           <h3 className="text-xl font-black text-zinc-900 tracking-tight mb-6">Concierge</h3>
@@ -1287,7 +1288,8 @@ const ChatView = () => {
         </div>
       </div>
     </div>
-  );
+  </div>
+);
 };
 
 const HistoryView = ({ transactions }: { transactions: any[] }) => {

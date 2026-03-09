@@ -858,9 +858,10 @@ const AdminChatView = () => {
   );
 
   return (
-    <div className="bg-white rounded-[2.5rem] border border-zinc-200 h-[750px] flex overflow-hidden shadow-sm">
-      {/* Sessions Sidebar */}
-      <div className="w-80 border-r border-zinc-100 flex flex-col bg-zinc-50/30">
+    <div className="max-w-6xl mx-auto">
+      <div className="bg-white rounded-[2.5rem] border border-zinc-200 h-[800px] flex overflow-hidden shadow-2xl shadow-zinc-200/50">
+        {/* Sessions Sidebar */}
+        <div className="w-80 border-r border-zinc-100 flex flex-col bg-zinc-50/30">
         <div className="p-8 border-b border-zinc-100 bg-white">
           <h3 className="text-lg font-black text-zinc-900 tracking-tight mb-6">Customer Support</h3>
           <div className="relative">
@@ -977,7 +978,8 @@ const AdminChatView = () => {
         )}
       </div>
     </div>
-  );
+  </div>
+);
 };
 
 interface UserData {
