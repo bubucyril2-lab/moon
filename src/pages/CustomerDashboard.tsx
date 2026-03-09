@@ -173,10 +173,6 @@ const CustomerDashboard = () => {
 
   return (
     <div className="min-h-screen bg-transparent text-zinc-900 relative overflow-hidden">
-      {/* Decorative background elements */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-amber-100/20 blur-[120px] rounded-full -z-10" />
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-yellow-50/30 blur-[120px] rounded-full -z-10" />
-      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
         <div className="flex flex-col gap-8">
           {/* Header Section */}
@@ -1336,7 +1332,8 @@ const HistoryView = ({ transactions }: { transactions: any[] }) => {
       </div>
 
       <div className="bg-white rounded-[2.5rem] border border-zinc-200/60 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto no-scrollbar">
+        {/* Desktop Table */}
+        <div className="hidden md:block overflow-x-auto no-scrollbar">
           <table className="w-full text-left border-separate border-spacing-0">
             <thead>
               <tr className="bg-zinc-50/50">
@@ -1350,7 +1347,7 @@ const HistoryView = ({ transactions }: { transactions: any[] }) => {
             </thead>
             <tbody className="divide-y divide-zinc-100">
               {transactions?.length > 0 ? transactions.map((txn: any) => (
-                <tr key={txn.id} className="hover:bg-zinc-50/50 transition-all group">
+                <tr key={txn.id} className="hover:bg-[#E9EEF6] transition-all group">
                   <td className="px-8 py-7">
                     <div className="flex items-center gap-5">
                       <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all group-hover:scale-110 shadow-sm border ${
@@ -1386,7 +1383,7 @@ const HistoryView = ({ transactions }: { transactions: any[] }) => {
                       {txn.type.includes('in') || txn.type === 'deposit' || txn.type === 'loan_disbursement' ? '+' : '-'}{formatCurrency(txn.amount)}
                     </p>
                   </td>
-                  <td className="px-8 py-7 text-right sticky right-0 bg-white group-hover:bg-zinc-50/50 z-10 border-b border-zinc-100 transition-colors backdrop-blur-md">
+                  <td className="px-8 py-7 text-right sticky right-0 bg-white group-hover:bg-[#E9EEF6] z-10 border-b border-zinc-100 transition-colors backdrop-blur-md">
                     <button 
                       onClick={() => downloadReceipt(txn.id)}
                       className="w-12 h-12 rounded-2xl bg-zinc-100 flex items-center justify-center text-zinc-400 hover:text-zinc-900 hover:bg-zinc-200 transition-all shadow-sm active:scale-90"
@@ -1408,6 +1405,58 @@ const HistoryView = ({ transactions }: { transactions: any[] }) => {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Cards */}
+        <div className="md:hidden divide-y divide-zinc-100">
+          {transactions?.length > 0 ? transactions.map((txn: any) => (
+            <div key={txn.id} className="p-6 space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center border ${
+                    txn.type.includes('in') || txn.type === 'deposit' || txn.type === 'loan_disbursement' 
+                      ? 'bg-emerald-50 text-emerald-600 border-emerald-100' 
+                      : 'bg-zinc-100 text-zinc-900 border-zinc-200'
+                  }`}>
+                    {txn.type.includes('in') || txn.type === 'deposit' || txn.type === 'loan_disbursement' ? <ArrowDownLeft className="w-5 h-5" /> : <ArrowUpRight className="w-5 h-5" />}
+                  </div>
+                  <div>
+                    <p className="font-black text-zinc-900 text-base tracking-tight leading-none mb-1">{txn.description}</p>
+                    <p className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.2em]">{txn.type.replace('_', ' ')}</p>
+                  </div>
+                </div>
+                <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ${
+                  txn.status === 'completed' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 
+                  txn.status === 'pending' ? 'bg-amber-50 text-amber-600 border-amber-100' : 'bg-red-50 text-red-600 border-red-100'
+                }`}>{txn.status}</span>
+              </div>
+
+              <div className="flex items-center justify-between pt-2">
+                <div>
+                  <p className="text-sm font-black text-zinc-900 tracking-tight">{new Date(txn.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
+                  <p className="text-[9px] font-black text-zinc-400 uppercase tracking-widest">{new Date(txn.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                </div>
+                <div className="text-right">
+                  <p className={`font-black text-xl tracking-tighter ${
+                    txn.type.includes('in') || txn.type === 'deposit' || txn.type === 'loan_disbursement' ? 'text-emerald-600' : 'text-zinc-900'
+                  }`}>
+                    {txn.type.includes('in') || txn.type === 'deposit' || txn.type === 'loan_disbursement' ? '+' : '-'}{formatCurrency(txn.amount)}
+                  </p>
+                  <button 
+                    onClick={() => downloadReceipt(txn.id)}
+                    className="text-[9px] font-black text-zinc-400 uppercase tracking-widest hover:text-zinc-900 transition-colors mt-1"
+                  >
+                    Download Receipt
+                  </button>
+                </div>
+              </div>
+            </div>
+          )) : (
+            <div className="py-20 text-center">
+              <History className="w-10 h-10 text-zinc-200 mx-auto mb-4" />
+              <p className="text-zinc-500 font-bold uppercase tracking-widest text-[10px]">No History</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

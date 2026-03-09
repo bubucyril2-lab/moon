@@ -51,19 +51,19 @@ const Sidebar = () => {
   const dashboardPath = isAdmin ? "/admin" : "/dashboard";
 
   return (
-    <aside className="hidden lg:flex flex-col w-72 bg-amber-50/30 backdrop-blur-xl border-r border-zinc-200 h-screen sticky top-0 overflow-hidden">
-      <div className="p-8 border-b border-zinc-100">
+    <aside className="hidden lg:flex flex-col w-72 bg-[#0F2A44] border-r border-white/5 h-screen sticky top-0 overflow-hidden">
+      <div className="p-8 border-b border-white/5">
         <Link to="/" className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-200">
+          <div className="w-10 h-10 rounded-2xl bg-emerald-500 flex items-center justify-center shadow-lg shadow-emerald-500/20">
             <Landmark className="w-6 h-6 text-white" />
           </div>
-          <span className="text-xl font-black text-zinc-900 tracking-tighter uppercase">Moonstone</span>
+          <span className="text-xl font-black text-white tracking-tighter uppercase">Moonstone</span>
         </Link>
       </div>
 
       <div className="flex-1 overflow-y-auto no-scrollbar p-6 space-y-8">
         <div className="space-y-2">
-          <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] ml-4 mb-4">Main Menu</p>
+          <p className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] ml-4 mb-4">Main Menu</p>
           <div className="grid gap-1">
             {features.map((item) => (
               <Link 
@@ -71,19 +71,19 @@ const Sidebar = () => {
                 to={`${dashboardPath}?tab=${item.id}`} 
                 className={`flex items-center gap-3.5 px-4 py-3.5 rounded-2xl font-black text-sm transition-all group ${
                   activeTab === item.id 
-                    ? 'bg-zinc-900 text-white shadow-xl shadow-zinc-200' 
-                    : 'text-zinc-500 hover:bg-zinc-50 hover:text-zinc-900'
+                    ? 'bg-white text-dashboard-sidebar shadow-xl' 
+                    : 'text-white/60 hover:bg-white/5 hover:text-white'
                 }`}
               >
-                <item.icon className={`w-5 h-5 ${activeTab === item.id ? 'text-emerald-400' : 'text-zinc-400 group-hover:text-zinc-900'}`} />
+                <item.icon className={`w-5 h-5 ${activeTab === item.id ? 'text-emerald-500' : 'text-white/40 group-hover:text-white'}`} />
                 {item.label}
               </Link>
             ))}
           </div>
         </div>
 
-        <div className="space-y-2 pt-8 border-t border-zinc-100">
-          <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] ml-4 mb-4">Quick Links</p>
+        <div className="space-y-2 pt-8 border-t border-white/5">
+          <p className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] ml-4 mb-4">Quick Links</p>
           <div className="grid gap-1">
             {[
               { to: '/', label: 'Home', icon: Landmark },
@@ -94,9 +94,9 @@ const Sidebar = () => {
               <Link 
                 key={link.to}
                 to={link.to} 
-                className="flex items-center gap-3.5 px-4 py-3.5 rounded-2xl font-black text-sm text-zinc-500 hover:bg-zinc-50 hover:text-zinc-900 transition-all group"
+                className="flex items-center gap-3.5 px-4 py-3.5 rounded-2xl font-black text-sm text-white/60 hover:bg-white/5 hover:text-white transition-all group"
               >
-                <link.icon className="w-5 h-5 text-zinc-400 group-hover:text-zinc-900" />
+                <link.icon className="w-5 h-5 text-white/40 group-hover:text-white" />
                 {link.label}
               </Link>
             ))}
@@ -104,25 +104,25 @@ const Sidebar = () => {
         </div>
       </div>
 
-      <div className="p-6 border-t border-zinc-100 space-y-4">
-        <div className="flex items-center gap-3 p-3 bg-zinc-50 rounded-2xl border border-zinc-100">
-          <div className="w-10 h-10 rounded-xl bg-white border border-zinc-200 overflow-hidden">
+      <div className="p-6 border-t border-white/5 space-y-4">
+        <div className="flex items-center gap-3 p-3 bg-white/5 rounded-2xl border border-white/5">
+          <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/10 overflow-hidden">
             {user?.profile_picture ? (
               <img src={user.profile_picture} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
             ) : (
-              <div className="w-full h-full flex items-center justify-center"><User className="w-5 h-5 text-zinc-400" /></div>
+              <div className="w-full h-full flex items-center justify-center"><User className="w-5 h-5 text-white/40" /></div>
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-black text-zinc-900 truncate">{user?.first_name} {user?.last_name}</p>
-            <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest truncate">{user?.role}</p>
+            <p className="text-xs font-black text-white truncate">{user?.first_name} {user?.last_name}</p>
+            <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest truncate">{user?.role}</p>
           </div>
         </div>
         <button 
           onClick={logout}
-          className="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl font-black text-sm text-red-600 hover:bg-red-50 transition-all group"
+          className="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl font-black text-sm text-red-400 hover:bg-red-500/10 transition-all group"
         >
-          <LogOut className="w-5 h-5 text-red-400 group-hover:text-red-600" />
+          <LogOut className="w-5 h-5 text-red-400 group-hover:text-red-400" />
           Sign Out
         </button>
       </div>

@@ -1178,10 +1178,6 @@ const AdminDashboard = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 relative overflow-hidden">
-      {/* Decorative background elements */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-amber-100/20 blur-[130px] rounded-full -z-10" />
-      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-yellow-50/40 blur-[130px] rounded-full -z-10" />
-      
       <div className="flex flex-col gap-10">
         {/* Admin Content */}
         <main className="flex-1 min-w-0">
@@ -1211,7 +1207,7 @@ const AdminDashboard = () => {
                   { label: 'Verified Accounts', value: stats?.activeAccounts ?? 0, icon: CheckCircle, color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-100', trend: '98%' },
                   { label: 'Total Liquidity', value: formatCurrency(stats?.totalBalance ?? 0), icon: DollarSign, color: 'text-zinc-900', bg: 'bg-zinc-100', border: 'border-zinc-200', trend: 'Stable' }
                 ].map((stat, i) => (
-                  <div key={i} className="bg-white/70 backdrop-blur-xl p-8 rounded-[2.5rem] border border-zinc-200/60 shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all group relative overflow-hidden">
+                  <div key={i} className="bg-white p-8 rounded-[2.5rem] border border-zinc-200/60 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group relative overflow-hidden">
                     <div className={`w-14 h-14 rounded-2xl ${stat.bg} ${stat.color} flex items-center justify-center mb-6 border ${stat.border} shadow-sm group-hover:scale-110 transition-transform`}>
                       <stat.icon className="w-6 h-6" />
                     </div>
@@ -1233,7 +1229,7 @@ const AdminDashboard = () => {
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-2 bg-white/70 backdrop-blur-xl rounded-[2.5rem] border border-zinc-200/60 overflow-hidden shadow-sm">
+                <div className="lg:col-span-2 bg-white rounded-[2.5rem] border border-zinc-200/60 overflow-hidden shadow-sm">
                   <div className="p-10 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/30">
                     <div>
                       <h3 className="font-black text-zinc-900 text-xl tracking-tight">Pending Ledger Approvals</h3>
@@ -1243,9 +1239,9 @@ const AdminDashboard = () => {
                       {transactions.filter(t => t.status === 'pending').length} Priority
                     </span>
                   </div>
-                  <div className="divide-y divide-zinc-100 overflow-x-auto no-scrollbar">
+                  <div className="divide-y divide-zinc-100">
                     {transactions.filter(t => t.status === 'pending').map((txn) => (
-                      <div key={txn.id} className="p-8 flex items-center justify-between hover:bg-zinc-50/50 transition-colors min-w-[600px] md:min-w-0 group">
+                      <div key={txn.id} className="p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between hover:bg-[#E9EEF6] transition-colors group gap-6">
                         <div className="flex items-center gap-6">
                           <div className="w-16 h-16 rounded-2xl bg-zinc-100 flex items-center justify-center border border-zinc-200 overflow-hidden shadow-sm group-hover:scale-105 transition-transform">
                             {txn.profile_picture ? (
@@ -1266,11 +1262,11 @@ const AdminDashboard = () => {
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-center gap-10">
-                          <p className="font-black text-zinc-900 text-3xl tracking-tighter">{formatCurrency(txn.amount)}</p>
+                        <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4 md:gap-10 pt-4 md:pt-0 border-t md:border-0 border-zinc-100">
+                          <p className="font-black text-2xl md:text-3xl tracking-tighter text-zinc-900">{formatCurrency(txn.amount)}</p>
                           <button 
                             onClick={() => approveTransaction(txn.id)}
-                            className="bg-zinc-900 text-white px-10 py-5 rounded-2xl text-sm font-black tracking-tight hover:bg-emerald-600 transition-all shadow-2xl shadow-zinc-200 active:scale-95"
+                            className="bg-zinc-900 text-white px-8 md:px-10 py-4 md:py-5 rounded-2xl text-sm font-black tracking-tight hover:bg-emerald-600 transition-all shadow-2xl shadow-zinc-200 active:scale-95"
                           >
                             Verify & Post
                           </button>
@@ -1350,7 +1346,8 @@ const AdminDashboard = () => {
               </div>
 
               <div className="bg-white rounded-[2.5rem] border border-zinc-200 overflow-hidden shadow-sm">
-                <div className="overflow-x-auto no-scrollbar">
+                {/* Desktop Table */}
+                <div className="hidden md:block overflow-x-auto no-scrollbar">
                   <table className="w-full text-left border-separate border-spacing-0 min-w-[1000px]">
                     <thead>
                       <tr className="bg-zinc-50/50">
@@ -1383,6 +1380,53 @@ const AdminDashboard = () => {
                     </tbody>
                   </table>
                 </div>
+
+                {/* Mobile Cards */}
+                <div className="md:hidden divide-y divide-zinc-100">
+                  {customers.filter(c => 
+                    `${c.first_name} ${c.last_name}`.toLowerCase().includes(search.toLowerCase()) ||
+                    c.email.toLowerCase().includes(search.toLowerCase()) ||
+                    (c.account_number && c.account_number.includes(search))
+                  ).map((c) => (
+                    <div key={c.id} className="p-6 space-y-6">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-zinc-100 flex items-center justify-center border border-zinc-200 overflow-hidden shadow-sm">
+                          {c.profile_picture ? (
+                            <img src={c.profile_picture} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                          ) : (
+                            <div className="text-zinc-400 font-black text-lg">{c.first_name.charAt(0)}</div>
+                          )}
+                        </div>
+                        <div>
+                          <p className="font-black text-zinc-900 text-sm tracking-tight">{c.first_name} {c.last_name}</p>
+                          <p className="text-[10px] text-zinc-500 font-medium">{c.email}</p>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="p-4 bg-zinc-50 rounded-2xl border border-zinc-100">
+                          <p className="text-[9px] font-black text-zinc-400 uppercase tracking-widest mb-1">Balance</p>
+                          <p className="text-lg font-black text-zinc-900 tracking-tight">{formatCurrency(c.balance || 0)}</p>
+                        </div>
+                        <div className="p-4 bg-zinc-50 rounded-2xl border border-zinc-100">
+                          <p className="text-[9px] font-black text-zinc-400 uppercase tracking-widest mb-1">Account</p>
+                          <p className="text-xs font-mono font-bold text-zinc-600 truncate">{c.account_number || 'N/A'}</p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between gap-4">
+                        <div className="flex-1 flex items-center gap-2">
+                          <button onClick={() => setEditingCustomer(c)} className="flex-1 py-3 bg-zinc-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-zinc-200">Edit</button>
+                          <button onClick={() => setSendingMessageTo(c)} className="flex-1 py-3 bg-white border border-zinc-200 text-zinc-900 rounded-xl text-[10px] font-black uppercase tracking-widest">Chat</button>
+                        </div>
+                        <div className="flex gap-2">
+                          <button onClick={() => setResettingPassword(c)} className="w-10 h-10 flex items-center justify-center bg-zinc-100 text-zinc-400 rounded-xl"><Key className="w-4 h-4" /></button>
+                          <button onClick={() => deleteCustomer(c.id)} className="w-10 h-10 flex items-center justify-center bg-red-50 text-red-400 rounded-xl"><Trash2 className="w-4 h-4" /></button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           )}
@@ -1406,7 +1450,8 @@ const AdminDashboard = () => {
               </div>
 
               <div className="bg-white rounded-[2.5rem] border border-zinc-200 overflow-hidden shadow-sm">
-                <div className="overflow-x-auto no-scrollbar">
+                {/* Desktop Table */}
+                <div className="hidden md:block overflow-x-auto no-scrollbar">
                   <table className="w-full text-left border-separate border-spacing-0 min-w-[1100px]">
                     <thead>
                       <tr className="bg-zinc-50/50">
@@ -1490,6 +1535,54 @@ const AdminDashboard = () => {
                     </tbody>
                   </table>
                 </div>
+
+                {/* Mobile Cards */}
+                <div className="md:hidden divide-y divide-zinc-100">
+                  {customers.filter(c => 
+                    `${c.first_name} ${c.last_name}`.toLowerCase().includes(search.toLowerCase()) ||
+                    c.email.toLowerCase().includes(search.toLowerCase()) ||
+                    c.account_number.includes(search)
+                  ).map((c) => (
+                    <div key={c.id} className="p-6 space-y-6">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-xl bg-zinc-100 overflow-hidden border border-zinc-200">
+                            {c.profile_picture ? (
+                              <img src={c.profile_picture} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-zinc-400 font-black text-lg">{c.first_name.charAt(0)}</div>
+                            )}
+                          </div>
+                          <div>
+                            <p className="font-black text-zinc-900 tracking-tight">{c.first_name} {c.last_name}</p>
+                            <p className="text-[10px] text-zinc-500 font-medium">{c.email}</p>
+                          </div>
+                        </div>
+                        <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ${
+                          c.status === 'active' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-amber-50 text-amber-600 border-amber-100'
+                        }`}>{c.status}</span>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="p-4 bg-zinc-50 rounded-2xl border border-zinc-100">
+                          <p className="text-[9px] font-black text-zinc-400 uppercase tracking-widest mb-1">Balance</p>
+                          <p className="text-lg font-black text-zinc-900 tracking-tight">{formatCurrency(c.balance || 0)}</p>
+                        </div>
+                        <div className="p-4 bg-zinc-50 rounded-2xl border border-zinc-100">
+                          <p className="text-[9px] font-black text-zinc-400 uppercase tracking-widest mb-1">PIN</p>
+                          <p className="text-sm font-mono font-black text-zinc-900 tracking-[0.3em]">{c.transfer_pin || '----'}</p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <button onClick={() => setEditingCustomer(c)} className="flex-1 py-3 bg-zinc-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest">Edit</button>
+                        <button onClick={() => setSendingMessageTo(c)} className="flex-1 py-3 bg-white border border-zinc-200 text-zinc-900 rounded-xl text-[10px] font-black uppercase tracking-widest">Chat</button>
+                        <button onClick={() => setResettingPassword(c)} className="w-10 h-10 flex items-center justify-center bg-zinc-100 text-zinc-400 rounded-xl"><Key className="w-4 h-4" /></button>
+                        <button onClick={() => deleteCustomer(c.id)} className="w-10 h-10 flex items-center justify-center bg-red-50 text-red-400 rounded-xl"><Trash2 className="w-4 h-4" /></button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
               <CreditDebitTool customers={customers} onComplete={fetchData} />
             </div>
@@ -1515,7 +1608,7 @@ const AdminDashboard = () => {
               <div className="bg-white rounded-[2.5rem] border border-zinc-200 overflow-hidden shadow-sm">
                 <div className="divide-y divide-zinc-100 overflow-x-auto no-scrollbar">
                   {transactions.map((txn) => (
-                    <div key={txn.id} className="p-8 flex justify-between items-center hover:bg-zinc-50/50 transition-all group min-w-[700px] md:min-w-0">
+                    <div key={txn.id} className="p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between hover:bg-[#E9EEF6] transition-all group gap-6">
                       <div className="flex items-center gap-8">
                         <div className={`w-16 h-16 rounded-[1.25rem] flex items-center justify-center shadow-sm border ${
                           txn.status === 'completed' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-amber-50 text-amber-600 border-amber-100'
@@ -1536,19 +1629,19 @@ const AdminDashboard = () => {
                           <p className="text-[10px] text-zinc-400 mt-2 font-mono font-black tracking-[0.2em] uppercase">{txn.reference}</p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-10">
-                        <div className="text-right">
-                          <p className="text-2xl font-black text-zinc-900 tracking-tight">{formatCurrency(txn.amount)}</p>
-                          <span className={`text-[10px] uppercase font-black tracking-[0.2em] px-4 py-1.5 rounded-2xl border mt-2 inline-block ${
+                      <div className="flex items-center justify-between md:justify-end gap-4 md:gap-10 pt-4 md:pt-0 border-t md:border-0 border-zinc-100">
+                        <div className="text-left md:text-right">
+                          <p className="text-xl md:text-2xl font-black text-zinc-900 tracking-tight">{formatCurrency(txn.amount)}</p>
+                          <span className={`text-[9px] md:text-[10px] uppercase font-black tracking-[0.2em] px-3 md:px-4 py-1 md:py-1.5 rounded-2xl border mt-1 md:mt-2 inline-block ${
                             txn.status === 'completed' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-amber-50 text-amber-600 border-amber-100'
                           }`}>{txn.status}</span>
                         </div>
                         <button 
                           onClick={() => setEditingTxnDate(txn)}
-                          className="flex items-center gap-2 px-5 py-3 bg-zinc-50 hover:bg-zinc-900 text-zinc-500 hover:text-white rounded-2xl transition-all border border-zinc-200 hover:border-zinc-900 shadow-sm"
+                          className="flex items-center gap-2 px-4 md:px-5 py-2.5 md:py-3 bg-zinc-50 hover:bg-zinc-900 text-zinc-500 hover:text-white rounded-xl md:rounded-2xl transition-all border border-zinc-200 hover:border-zinc-900 shadow-sm"
                         >
-                          <Calendar className="w-4 h-4" />
-                          <span className="text-[10px] font-black uppercase tracking-widest">Adjust Date</span>
+                          <Calendar className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                          <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest">Adjust Date</span>
                         </button>
                       </div>
                     </div>
@@ -1587,7 +1680,7 @@ const AdminDashboard = () => {
               <div className="bg-white rounded-[2.5rem] border border-zinc-200 overflow-hidden shadow-sm">
                 <div className="divide-y divide-zinc-100 overflow-x-auto no-scrollbar">
                   {loans.map((loan) => (
-                    <div key={loan.id} className="p-8 flex justify-between items-center hover:bg-zinc-50/50 transition-all group min-w-[700px] md:min-w-0">
+                    <div key={loan.id} className="p-8 flex justify-between items-center hover:bg-[#E9EEF6] transition-all group min-w-[700px] md:min-w-0">
                       <div className="flex items-center gap-8">
                         <div className={`w-16 h-16 rounded-[1.25rem] flex items-center justify-center shadow-sm border ${
                           loan.status === 'approved' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 

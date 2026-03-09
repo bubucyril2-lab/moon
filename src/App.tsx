@@ -55,7 +55,7 @@ function AppContent() {
     <div className={`min-h-screen font-sans text-zinc-900 ${isAuthenticated ? 'lg:flex' : ''}`}>
       <Navbar />
       {isAuthenticated && <Sidebar />}
-      <main className={`flex-1 min-w-0 ${isAuthenticated ? 'h-screen overflow-y-auto no-scrollbar pb-24 lg:pb-0 bg-gradient-to-br from-white via-white to-amber-50/40' : ''}`}>
+      <main className={`flex-1 min-w-0 ${isAuthenticated ? 'h-screen overflow-y-auto no-scrollbar pb-24 lg:pb-0 bg-[#F0F2F5]' : ''}`}>
         <Routes>
           <Route path="/" element={<PublicSiteRoute><Home /></PublicSiteRoute>} />
           <Route path="/about" element={<PublicSiteRoute><About /></PublicSiteRoute>} />
