@@ -27,7 +27,8 @@ import {
   Layout,
   Calendar,
   LogOut,
-  ArrowLeft
+  ArrowLeft,
+  ArrowRight
 } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -162,7 +163,7 @@ const MasterControlRow = ({ customer, onUpdate, onDelete, onAction, formatCurren
           </div>
         </div>
       </td>
-      <td className="px-8 py-6 text-right">
+      <td className="px-8 py-6 text-right sticky right-0 bg-white group-hover:bg-zinc-50/50 z-10 border-b border-zinc-100 transition-colors backdrop-blur-md">
         <div className="flex items-center justify-end gap-1 transition-all">
           <button onClick={() => onAction(customer, 'edit')} className="p-2.5 text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 rounded-xl transition-all" title="Edit Profile"><Edit className="w-4 h-4" /></button>
           <button onClick={() => onAction(customer, 'message')} className="p-2.5 text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 rounded-xl transition-all" title="Message"><MessageSquare className="w-4 h-4" /></button>
@@ -1205,23 +1206,34 @@ const AdminDashboard = () => {
               
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
-                  { label: 'Total Users', value: stats?.totalCustomers ?? 0, icon: Users, color: 'text-blue-600', bg: 'bg-blue-50', border: 'border-blue-100' },
-                  { label: 'Action Required', value: stats?.pendingApprovals ?? 0, icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-100' },
-                  { label: 'Verified Accounts', value: stats?.activeAccounts ?? 0, icon: CheckCircle, color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-100' },
-                  { label: 'Total Liquidity', value: formatCurrency(stats?.totalBalance ?? 0), icon: DollarSign, color: 'text-zinc-900', bg: 'bg-zinc-100', border: 'border-zinc-200' }
+                  { label: 'Total Users', value: stats?.totalCustomers ?? 0, icon: Users, color: 'text-blue-600', bg: 'bg-blue-50', border: 'border-blue-100', trend: '+4%' },
+                  { label: 'Action Required', value: stats?.pendingApprovals ?? 0, icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-100', trend: 'High' },
+                  { label: 'Verified Accounts', value: stats?.activeAccounts ?? 0, icon: CheckCircle, color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-100', trend: '98%' },
+                  { label: 'Total Liquidity', value: formatCurrency(stats?.totalBalance ?? 0), icon: DollarSign, color: 'text-zinc-900', bg: 'bg-zinc-100', border: 'border-zinc-200', trend: 'Stable' }
                 ].map((stat, i) => (
-                  <div key={i} className="bg-white p-8 rounded-[2rem] border border-zinc-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group">
+                  <div key={i} className="bg-white/70 backdrop-blur-xl p-8 rounded-[2.5rem] border border-zinc-200/60 shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all group relative overflow-hidden">
                     <div className={`w-14 h-14 rounded-2xl ${stat.bg} ${stat.color} flex items-center justify-center mb-6 border ${stat.border} shadow-sm group-hover:scale-110 transition-transform`}>
                       <stat.icon className="w-6 h-6" />
                     </div>
-                    <p className="text-zinc-400 text-[10px] font-black uppercase tracking-[0.2em]">{stat.label}</p>
-                    <h3 className="text-3xl font-black text-zinc-900 mt-2 tracking-tight">{stat.value}</h3>
+                    <div className="flex justify-between items-end">
+                      <div>
+                        <p className="text-zinc-400 text-[10px] font-black uppercase tracking-[0.2em]">{stat.label}</p>
+                        <h3 className="text-3xl font-black text-zinc-900 mt-2 tracking-tight">{stat.value}</h3>
+                      </div>
+                      <div className={`px-2 py-1 rounded-lg text-[10px] font-black ${
+                        stat.trend.includes('+') ? 'bg-emerald-50 text-emerald-600' : 'bg-zinc-100 text-zinc-500'
+                      }`}>
+                        {stat.trend}
+                      </div>
+                    </div>
+                    {/* Subtle background accent */}
+                    <div className={`absolute -right-4 -top-4 w-24 h-24 ${stat.bg} opacity-10 rounded-full blur-2xl group-hover:opacity-20 transition-opacity`} />
                   </div>
                 ))}
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-2 bg-white rounded-[2.5rem] border border-zinc-200 overflow-hidden shadow-sm">
+                <div className="lg:col-span-2 bg-white/70 backdrop-blur-xl rounded-[2.5rem] border border-zinc-200/60 overflow-hidden shadow-sm">
                   <div className="p-10 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/30">
                     <div>
                       <h3 className="font-black text-zinc-900 text-xl tracking-tight">Pending Ledger Approvals</h3>
@@ -1233,9 +1245,9 @@ const AdminDashboard = () => {
                   </div>
                   <div className="divide-y divide-zinc-100 overflow-x-auto no-scrollbar">
                     {transactions.filter(t => t.status === 'pending').map((txn) => (
-                      <div key={txn.id} className="p-8 flex items-center justify-between hover:bg-zinc-50/50 transition-colors min-w-[600px] md:min-w-0">
+                      <div key={txn.id} className="p-8 flex items-center justify-between hover:bg-zinc-50/50 transition-colors min-w-[600px] md:min-w-0 group">
                         <div className="flex items-center gap-6">
-                          <div className="w-14 h-14 rounded-2xl bg-zinc-100 flex items-center justify-center border border-zinc-200 overflow-hidden shadow-sm">
+                          <div className="w-16 h-16 rounded-2xl bg-zinc-100 flex items-center justify-center border border-zinc-200 overflow-hidden shadow-sm group-hover:scale-105 transition-transform">
                             {txn.profile_picture ? (
                               <img src={txn.profile_picture} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                             ) : (
@@ -1243,10 +1255,10 @@ const AdminDashboard = () => {
                             )}
                           </div>
                           <div>
-                            <p className="font-black text-zinc-900 tracking-tight">{txn.first_name} {txn.last_name}</p>
+                            <p className="font-black text-zinc-900 tracking-tight text-lg">{txn.first_name} {txn.last_name}</p>
                             <p className="text-sm text-zinc-500 font-medium">{txn.description}</p>
-                            <div className="flex items-center gap-2 mt-1.5">
-                              <p className="text-[10px] text-zinc-400 font-mono font-bold tracking-widest uppercase">{txn.reference}</p>
+                            <div className="flex items-center gap-3 mt-2">
+                              <p className="text-[10px] text-zinc-400 font-mono font-bold tracking-widest uppercase bg-zinc-100 px-2 py-0.5 rounded-md">{txn.reference}</p>
                               <span className="text-zinc-300">•</span>
                               <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">
                                 {new Date(txn.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -1254,11 +1266,11 @@ const AdminDashboard = () => {
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-center gap-8">
-                          <p className="font-black text-zinc-900 text-2xl tracking-tight">{formatCurrency(txn.amount)}</p>
+                        <div className="flex items-center gap-10">
+                          <p className="font-black text-zinc-900 text-3xl tracking-tighter">{formatCurrency(txn.amount)}</p>
                           <button 
                             onClick={() => approveTransaction(txn.id)}
-                            className="bg-zinc-900 text-white px-8 py-4 rounded-2xl text-sm font-black tracking-tight hover:bg-zinc-800 transition-all shadow-xl shadow-zinc-200"
+                            className="bg-zinc-900 text-white px-10 py-5 rounded-2xl text-sm font-black tracking-tight hover:bg-emerald-600 transition-all shadow-2xl shadow-zinc-200 active:scale-95"
                           >
                             Verify & Post
                           </button>
@@ -1277,32 +1289,34 @@ const AdminDashboard = () => {
                   </div>
                 </div>
 
-                <div className="bg-white rounded-[2.5rem] border border-zinc-200 overflow-hidden shadow-sm flex flex-col">
+                <div className="bg-white/70 backdrop-blur-xl rounded-[2.5rem] border border-zinc-200/60 overflow-hidden shadow-sm flex flex-col">
                   <div className="p-10 border-b border-zinc-100 bg-zinc-50/30">
                     <h3 className="font-black text-zinc-900 text-xl tracking-tight">Credit Queue</h3>
                     <p className="text-zinc-500 text-sm font-medium mt-1">Loan applications for review.</p>
                   </div>
                   <div className="flex-1 divide-y divide-zinc-100 overflow-y-auto no-scrollbar">
                     {loans.filter(l => l.status === 'pending').map((loan) => (
-                      <div key={loan.id} className="p-8 flex items-center justify-between hover:bg-zinc-50/50 transition-colors">
+                      <div key={loan.id} className="p-8 flex items-center justify-between hover:bg-zinc-50/50 transition-colors group">
                         <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 rounded-2xl bg-zinc-100 flex items-center justify-center border border-zinc-200 overflow-hidden shadow-sm">
+                          <div className="w-14 h-14 rounded-2xl bg-zinc-100 flex items-center justify-center border border-zinc-200 overflow-hidden shadow-sm group-hover:scale-105 transition-transform">
                             {loan.profile_picture ? (
                               <img src={loan.profile_picture} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                             ) : (
-                              <div className="text-zinc-400 font-black text-lg">{loan.first_name.charAt(0)}</div>
+                              <div className="text-zinc-400 font-black text-xl">{loan.first_name.charAt(0)}</div>
                             )}
                           </div>
                           <div>
-                            <p className="font-black text-zinc-900 tracking-tight">{loan.first_name} {loan.last_name}</p>
+                            <p className="font-black text-zinc-900 tracking-tight text-lg">{loan.first_name} {loan.last_name}</p>
                             <p className="text-xs text-zinc-500 font-medium truncate w-32">{loan.purpose}</p>
-                            <p className="text-sm font-black text-zinc-900 mt-1">{formatCurrency(loan.amount)}</p>
+                            <p className="text-md font-black text-emerald-600 mt-1">{formatCurrency(loan.amount)}</p>
                           </div>
                         </div>
-                        <div className="flex gap-2">
-                          <button onClick={() => updateLoanStatus(loan.id, 'approved')} className="p-3 text-emerald-600 hover:bg-emerald-50 rounded-2xl transition-all border border-transparent hover:border-emerald-100" title="Approve Credit"><CheckCircle className="w-5 h-5" /></button>
-                          <button onClick={() => updateLoanStatus(loan.id, 'rejected')} className="p-3 text-red-600 hover:bg-red-50 rounded-2xl transition-all border border-transparent hover:border-red-100" title="Decline Credit"><XCircle className="w-5 h-5" /></button>
-                        </div>
+                        <button 
+                          onClick={() => updateLoanStatus(loan.id, 'approved')}
+                          className="w-12 h-12 bg-zinc-900 text-white rounded-xl flex items-center justify-center hover:bg-emerald-600 transition-all active:scale-90 shadow-lg"
+                        >
+                          <ArrowRight className="w-5 h-5" />
+                        </button>
                       </div>
                     ))}
                     {loans.filter(l => l.status === 'pending').length === 0 && (
@@ -1337,14 +1351,14 @@ const AdminDashboard = () => {
 
               <div className="bg-white rounded-[2.5rem] border border-zinc-200 overflow-hidden shadow-sm">
                 <div className="overflow-x-auto no-scrollbar">
-                  <table className="w-full text-left border-collapse min-w-[1000px]">
+                  <table className="w-full text-left border-separate border-spacing-0 min-w-[1000px]">
                     <thead>
                       <tr className="bg-zinc-50/50">
-                        <th className="px-8 py-6 text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">Customer Identity</th>
-                        <th className="px-8 py-6 text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">Account & Security</th>
-                        <th className="px-8 py-6 text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">Net Liquidity</th>
-                        <th className="px-8 py-6 text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">Balance Adjustment</th>
-                        <th className="px-8 py-6 text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] text-right">Overrides</th>
+                        <th className="px-8 py-6 text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] border-b border-zinc-100">Customer Identity</th>
+                        <th className="px-8 py-6 text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] border-b border-zinc-100">Account & Security</th>
+                        <th className="px-8 py-6 text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] border-b border-zinc-100">Net Liquidity</th>
+                        <th className="px-8 py-6 text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] border-b border-zinc-100">Balance Adjustment</th>
+                        <th className="px-8 py-6 text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] text-right sticky right-0 bg-zinc-50 z-10 border-b border-zinc-100 backdrop-blur-md">Overrides</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-zinc-100">
@@ -1393,15 +1407,15 @@ const AdminDashboard = () => {
 
               <div className="bg-white rounded-[2.5rem] border border-zinc-200 overflow-hidden shadow-sm">
                 <div className="overflow-x-auto no-scrollbar">
-                  <table className="w-full text-left border-collapse min-w-[1100px]">
+                  <table className="w-full text-left border-separate border-spacing-0 min-w-[1100px]">
                     <thead>
                       <tr className="bg-zinc-50/50">
-                        <th className="px-8 py-6 text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">Profile</th>
-                        <th className="px-8 py-6 text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">Financial Node</th>
-                        <th className="px-8 py-6 text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">Security</th>
-                        <th className="px-8 py-6 text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">Balance</th>
-                        <th className="px-8 py-6 text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">Status</th>
-                        <th className="px-8 py-6 text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] text-right">Actions</th>
+                        <th className="px-8 py-6 text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] border-b border-zinc-100">Profile</th>
+                        <th className="px-8 py-6 text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] border-b border-zinc-100">Financial Node</th>
+                        <th className="px-8 py-6 text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] border-b border-zinc-100">Security</th>
+                        <th className="px-8 py-6 text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] border-b border-zinc-100">Balance</th>
+                        <th className="px-8 py-6 text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] border-b border-zinc-100">Status</th>
+                        <th className="px-8 py-6 text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] text-right sticky right-0 bg-zinc-50 z-10 border-b border-zinc-100 backdrop-blur-md">Actions</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-zinc-100">
@@ -1411,7 +1425,7 @@ const AdminDashboard = () => {
                         c.account_number.includes(search)
                       ).map((c) => (
                         <tr key={c.id} className="hover:bg-zinc-50/50 transition-all group">
-                          <td className="px-8 py-7">
+                          <td className="px-8 py-7 border-b border-zinc-100">
                             <div className="flex items-center gap-4">
                               <div className="w-14 h-14 rounded-2xl bg-zinc-100 overflow-hidden border border-zinc-200 shadow-sm">
                                 {c.profile_picture ? (
@@ -1428,11 +1442,11 @@ const AdminDashboard = () => {
                               </div>
                             </div>
                           </td>
-                          <td className="px-8 py-7">
+                          <td className="px-8 py-7 border-b border-zinc-100">
                             <p className="text-sm font-mono font-bold text-zinc-600 tracking-wider">{c.account_number}</p>
                             <p className="text-[10px] text-zinc-400 uppercase font-black tracking-widest mt-1.5">Premium Savings</p>
                           </td>
-                          <td className="px-8 py-7">
+                          <td className="px-8 py-7 border-b border-zinc-100">
                             <div className="flex items-center gap-2">
                               <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center">
                                 <ShieldCheck className="w-4 h-4 text-emerald-600" />
@@ -1445,16 +1459,16 @@ const AdminDashboard = () => {
                               </button>
                             </div>
                           </td>
-                          <td className="px-8 py-7">
+                          <td className="px-8 py-7 border-b border-zinc-100">
                             <p className="text-xl font-black text-zinc-900 tracking-tight">{formatCurrency(c.balance)}</p>
                           </td>
-                          <td className="px-8 py-7">
+                          <td className="px-8 py-7 border-b border-zinc-100">
                             <span className={`px-4 py-1.5 rounded-2xl text-[10px] font-black uppercase tracking-widest border ${
                               c.status === 'active' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 
                               c.status === 'pending' ? 'bg-amber-50 text-amber-600 border-amber-100' : 'bg-red-50 text-red-600 border-red-100'
                             }`}>{c.status}</span>
                           </td>
-                          <td className="px-8 py-7">
+                          <td className="px-8 py-7 sticky right-0 bg-white group-hover:bg-zinc-50/50 z-10 border-b border-zinc-100 transition-colors backdrop-blur-md">
                             <div className="flex justify-end gap-1 transition-all">
                               {c.status === 'pending' && (
                                 <button onClick={() => updateCustomerStatus(c.id, 'active')} className="p-2.5 text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all" title="Approve"><CheckCircle className="w-5 h-5" /></button>

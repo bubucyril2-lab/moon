@@ -231,13 +231,18 @@ const CustomerDashboard = () => {
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                     {/* Card & Balance - Main Focus */}
                     <div className="lg:col-span-4 space-y-6">
-                      <div className="relative group">
-                        <CreditCardComp 
-                          type="black" 
-                          number={`**** **** **** ${data?.account?.account_number?.slice(-4) || '8888'}`}
-                          holder={`${user?.first_name} ${user?.last_name}`}
-                          className="shadow-2xl shadow-zinc-400/30 ring-1 ring-white/20"
-                        />
+                      <div className="relative group perspective-1000">
+                        <motion.div
+                          whileHover={{ rotateY: 5, rotateX: -5 }}
+                          transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                        >
+                          <CreditCardComp 
+                            type="black" 
+                            number={`**** **** **** ${data?.account?.account_number?.slice(-4) || '8888'}`}
+                            holder={`${user?.first_name} ${user?.last_name}`}
+                            className="shadow-2xl shadow-zinc-900/40 ring-1 ring-white/20"
+                          />
+                        </motion.div>
                         <div className="absolute top-4 right-4">
                           <div className="px-3 py-1 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
                             <p className="text-[10px] font-bold text-white uppercase tracking-widest">Active</p>
@@ -245,99 +250,113 @@ const CustomerDashboard = () => {
                         </div>
                       </div>
 
-                      <div className="bg-zinc-900 rounded-[2rem] p-8 text-white shadow-2xl shadow-zinc-900/20 relative overflow-hidden">
+                      <div className="bg-zinc-900 rounded-[2.5rem] p-10 text-white shadow-2xl shadow-zinc-900/40 relative overflow-hidden group">
                         <div className="relative z-10">
-                          <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em] mb-2">Total Available Balance</p>
+                          <div className="flex justify-between items-start mb-4">
+                            <p className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em]">Available Balance</p>
+                            <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center group-hover:bg-emerald-500 transition-colors">
+                              <Wallet className="w-5 h-5 text-emerald-400 group-hover:text-white" />
+                            </div>
+                          </div>
                           <div className="flex items-baseline gap-2">
-                            <span className="text-4xl md:text-5xl font-black tracking-tighter">
+                            <span className="text-5xl md:text-6xl font-black tracking-tighter">
                               {formatCurrency(data?.account?.balance || 0)}
                             </span>
                           </div>
-                          <div className="mt-8 pt-6 border-t border-white/10 flex justify-between items-center">
-                            <div>
-                              <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Account Number</p>
-                              <p className="font-mono text-sm font-bold tracking-wider">{data?.account?.account_number}</p>
-                            </div>
-                            <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center">
-                              <Wallet className="w-5 h-5 text-emerald-400" />
+                          <div className="mt-10 pt-8 border-t border-white/10">
+                            <div className="flex justify-between items-center">
+                              <div>
+                                <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1">Account ID</p>
+                                <p className="font-mono text-sm font-bold tracking-[0.2em] text-zinc-300">{data?.account?.account_number}</p>
+                              </div>
+                              <div className="px-3 py-1 bg-emerald-500/10 text-emerald-400 rounded-lg text-[10px] font-black uppercase tracking-widest border border-emerald-500/20">
+                                Verified
+                              </div>
                             </div>
                           </div>
                         </div>
-                        {/* Decorative background circle */}
-                        <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl" />
+                        {/* Decorative background elements */}
+                        <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl group-hover:bg-emerald-500/20 transition-all" />
+                        <div className="absolute -left-10 -top-10 w-32 h-32 bg-blue-500/5 rounded-full blur-2xl" />
                       </div>
                     </div>
 
                     {/* Income/Expense & Quick Actions */}
                     <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="bg-white rounded-[2rem] p-8 border border-zinc-200/60 shadow-sm flex flex-col justify-between group hover:border-emerald-500/30 transition-all">
+                      <div className="bg-white/70 backdrop-blur-xl rounded-[2.5rem] p-10 border border-zinc-200/60 shadow-sm flex flex-col justify-between group hover:border-emerald-500/30 transition-all hover:shadow-2xl hover:-translate-y-1">
                         <div>
-                          <div className="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 mb-6 group-hover:scale-110 transition-transform">
-                            <ArrowDownLeft className="w-7 h-7" />
+                          <div className="w-16 h-16 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 mb-8 group-hover:scale-110 transition-transform border border-emerald-100 shadow-sm">
+                            <ArrowDownLeft className="w-8 h-8" />
                           </div>
-                          <p className="text-zinc-500 font-bold text-sm uppercase tracking-widest mb-2">Monthly Income</p>
-                          <h3 className="text-3xl md:text-4xl font-black text-zinc-900 tracking-tight">
+                          <p className="text-zinc-400 font-black text-[10px] uppercase tracking-[0.2em] mb-3">Monthly Inflow</p>
+                          <h3 className="text-4xl md:text-5xl font-black text-zinc-900 tracking-tighter">
                             {formatCurrency(data?.income || 0)}
                           </h3>
                         </div>
-                        <div className="mt-8 flex items-center gap-2">
-                          <div className="flex -space-x-2">
-                            {[1, 2, 3].map(i => (
-                              <div key={i} className="w-6 h-6 rounded-full border-2 border-white bg-zinc-100" />
-                            ))}
+                        <div className="mt-10 flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div className="flex -space-x-3">
+                              {[1, 2, 3].map(i => (
+                                <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-zinc-100 shadow-sm" />
+                              ))}
+                            </div>
+                            <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest ml-2">+12.5%</p>
                           </div>
-                          <p className="text-xs font-bold text-zinc-400">+12% from last month</p>
+                          <TrendingUp className="w-5 h-5 text-emerald-500" />
                         </div>
                       </div>
 
-                      <div className="bg-white rounded-[2rem] p-8 border border-zinc-200/60 shadow-sm flex flex-col justify-between group hover:border-red-500/30 transition-all">
+                      <div className="bg-white/70 backdrop-blur-xl rounded-[2.5rem] p-10 border border-zinc-200/60 shadow-sm flex flex-col justify-between group hover:border-red-500/30 transition-all hover:shadow-2xl hover:-translate-y-1">
                         <div>
-                          <div className="w-14 h-14 rounded-2xl bg-red-50 flex items-center justify-center text-red-600 mb-6 group-hover:scale-110 transition-transform">
-                            <ArrowUpRight className="w-7 h-7" />
+                          <div className="w-16 h-16 rounded-2xl bg-red-50 flex items-center justify-center text-red-600 mb-8 group-hover:scale-110 transition-transform border border-red-100 shadow-sm">
+                            <ArrowUpRight className="w-8 h-8" />
                           </div>
-                          <p className="text-zinc-500 font-bold text-sm uppercase tracking-widest mb-2">Monthly Expenses</p>
-                          <h3 className="text-3xl md:text-4xl font-black text-zinc-900 tracking-tight">
+                          <p className="text-zinc-400 font-black text-[10px] uppercase tracking-[0.2em] mb-3">Monthly Outflow</p>
+                          <h3 className="text-4xl md:text-5xl font-black text-zinc-900 tracking-tighter">
                             {formatCurrency(data?.expense || 0)}
                           </h3>
                         </div>
-                        <div className="mt-8 flex items-center gap-2">
-                          <div className="w-full h-1.5 bg-zinc-100 rounded-full overflow-hidden">
-                            <div className="w-[65%] h-full bg-red-500" />
+                        <div className="mt-10">
+                          <div className="flex justify-between items-center mb-2">
+                            <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Budget Usage</p>
+                            <p className="text-[10px] font-black text-red-600 uppercase tracking-widest">65%</p>
                           </div>
-                          <p className="text-xs font-bold text-zinc-400 whitespace-nowrap">65% of limit</p>
+                          <div className="w-full h-2 bg-zinc-100 rounded-full overflow-hidden border border-zinc-200/50">
+                            <div className="w-[65%] h-full bg-red-500 rounded-full shadow-[0_0_10px_rgba(239,68,68,0.3)]" />
+                          </div>
                         </div>
                       </div>
 
                       {/* Quick Actions Bento */}
-                      <div className="md:col-span-2 bg-zinc-900 rounded-[2rem] p-8 text-white relative overflow-hidden">
-                        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
-                          <div className="text-center md:text-left">
-                            <h3 className="text-2xl font-black tracking-tight mb-2">Quick Actions</h3>
-                            <p className="text-zinc-400 font-medium">Manage your finances with one tap.</p>
+                      <div className="md:col-span-2 bg-zinc-900 rounded-[2.5rem] p-10 text-white relative overflow-hidden shadow-2xl shadow-zinc-900/30">
+                        <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-10">
+                          <div className="text-center lg:text-left">
+                            <h3 className="text-3xl font-black tracking-tight mb-3">Quick Actions</h3>
+                            <p className="text-zinc-400 font-medium max-w-xs">Securely manage your assets and transfers with instant verification.</p>
                           </div>
-                          <div className="flex flex-wrap justify-center gap-4">
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 w-full lg:w-auto">
                             {[
                               { label: 'Send Money', icon: Send, action: () => setActiveTab('transfers'), color: 'bg-emerald-500' },
                               { label: 'Pay Bills', icon: CreditCard, action: () => {}, color: 'bg-blue-500' },
-                              { label: 'Add Funds', icon: Plus, action: () => {}, color: 'bg-zinc-700' },
-                              { label: 'Support', icon: MessageSquare, action: () => setActiveTab('chat'), color: 'bg-zinc-700' }
+                              { label: 'Add Funds', icon: Plus, action: () => {}, color: 'bg-zinc-800' },
+                              { label: 'Support', icon: MessageSquare, action: () => setActiveTab('chat'), color: 'bg-zinc-800' }
                             ].map((btn, i) => (
                               <button
                                 key={i}
                                 onClick={btn.action}
-                                className="flex flex-col items-center gap-3 group"
+                                className="flex flex-col items-center gap-4 group"
                               >
-                                <div className={`w-16 h-16 ${btn.color} rounded-2xl flex items-center justify-center shadow-lg group-hover:-translate-y-1 transition-all duration-300`}>
-                                  <btn.icon className="w-6 h-6" />
+                                <div className={`w-20 h-20 ${btn.color} rounded-[1.75rem] flex items-center justify-center shadow-xl group-hover:-translate-y-2 transition-all duration-300 border border-white/10 group-hover:shadow-emerald-500/20`}>
+                                  <btn.icon className="w-8 h-8" />
                                 </div>
-                                <span className="text-[10px] font-bold uppercase tracking-widest opacity-60 group-hover:opacity-100 transition-opacity">{btn.label}</span>
+                                <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 group-hover:opacity-100 transition-opacity">{btn.label}</span>
                               </button>
                             ))}
                           </div>
                         </div>
                         {/* Background pattern */}
-                        <div className="absolute inset-0 opacity-10 pointer-events-none">
-                          <div className="absolute top-0 left-0 w-full h-full" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '24px 24px' }} />
+                        <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
+                          <div className="absolute top-0 left-0 w-full h-full" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '32px 32px' }} />
                         </div>
                       </div>
                     </div>
@@ -1317,60 +1336,62 @@ const HistoryView = ({ transactions }: { transactions: any[] }) => {
       </div>
 
       <div className="bg-white rounded-[2.5rem] border border-zinc-200/60 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+        <div className="overflow-x-auto no-scrollbar">
+          <table className="w-full text-left border-separate border-spacing-0">
             <thead>
-              <tr className="bg-zinc-50/50 border-b border-zinc-100">
-                <th className="px-8 py-5 text-[10px] font-black text-zinc-400 uppercase tracking-widest">Transaction</th>
-                <th className="px-8 py-5 text-[10px] font-black text-zinc-400 uppercase tracking-widest">Date & Time</th>
-                <th className="px-8 py-5 text-[10px] font-black text-zinc-400 uppercase tracking-widest">Reference</th>
-                <th className="px-8 py-5 text-[10px] font-black text-zinc-400 uppercase tracking-widest">Status</th>
-                <th className="px-8 py-5 text-[10px] font-black text-zinc-400 uppercase tracking-widest text-right">Amount</th>
-                <th className="px-8 py-5 text-[10px] font-black text-zinc-400 uppercase tracking-widest"></th>
+              <tr className="bg-zinc-50/50">
+                <th className="px-8 py-5 text-[10px] font-black text-zinc-400 uppercase tracking-widest border-b border-zinc-100">Transaction</th>
+                <th className="px-8 py-5 text-[10px] font-black text-zinc-400 uppercase tracking-widest border-b border-zinc-100">Date & Time</th>
+                <th className="px-8 py-5 text-[10px] font-black text-zinc-400 uppercase tracking-widest border-b border-zinc-100">Reference</th>
+                <th className="px-8 py-5 text-[10px] font-black text-zinc-400 uppercase tracking-widest border-b border-zinc-100">Status</th>
+                <th className="px-8 py-5 text-[10px] font-black text-zinc-400 uppercase tracking-widest text-right border-b border-zinc-100">Amount</th>
+                <th className="px-8 py-5 text-[10px] font-black text-zinc-400 uppercase tracking-widest sticky right-0 bg-zinc-50 z-10 border-b border-zinc-100 backdrop-blur-md">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-100">
               {transactions?.length > 0 ? transactions.map((txn: any) => (
-                <tr key={txn.id} className="hover:bg-zinc-50/50 transition-colors group">
-                  <td className="px-8 py-6">
-                    <div className="flex items-center gap-4">
-                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110 ${
-                        txn.type.includes('in') || txn.type === 'deposit' || txn.type === 'loan_disbursement' ? 'bg-emerald-50 text-emerald-600' : 'bg-zinc-100 text-zinc-900'
+                <tr key={txn.id} className="hover:bg-zinc-50/50 transition-all group">
+                  <td className="px-8 py-7">
+                    <div className="flex items-center gap-5">
+                      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all group-hover:scale-110 shadow-sm border ${
+                        txn.type.includes('in') || txn.type === 'deposit' || txn.type === 'loan_disbursement' 
+                          ? 'bg-emerald-50 text-emerald-600 border-emerald-100' 
+                          : 'bg-zinc-100 text-zinc-900 border-zinc-200'
                       }`}>
-                        {txn.type.includes('in') || txn.type === 'deposit' || txn.type === 'loan_disbursement' ? <ArrowDownLeft className="w-5 h-5" /> : <ArrowUpRight className="w-5 h-5" />}
+                        {txn.type.includes('in') || txn.type === 'deposit' || txn.type === 'loan_disbursement' ? <ArrowDownLeft className="w-6 h-6" /> : <ArrowUpRight className="w-6 h-6" />}
                       </div>
                       <div>
-                        <p className="font-black text-zinc-900 text-sm tracking-tight">{txn.description}</p>
-                        <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">{txn.type.replace('_', ' ')}</p>
+                        <p className="font-black text-zinc-900 text-lg tracking-tight leading-none mb-1">{txn.description}</p>
+                        <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">{txn.type.replace('_', ' ')}</p>
                       </div>
                     </div>
                   </td>
-                  <td className="px-8 py-6">
-                    <p className="text-sm font-bold text-zinc-600">{new Date(txn.created_at).toLocaleDateString()}</p>
-                    <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">{new Date(txn.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                  <td className="px-8 py-7">
+                    <p className="text-sm font-black text-zinc-900 tracking-tight">{new Date(txn.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                    <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mt-1">{new Date(txn.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                   </td>
-                  <td className="px-8 py-6">
-                    <p className="text-xs font-mono font-bold text-zinc-400 tracking-wider">{txn.reference || 'N/A'}</p>
+                  <td className="px-8 py-7">
+                    <p className="text-[10px] font-mono font-black text-zinc-400 tracking-[0.2em] bg-zinc-100 px-2 py-1 rounded-lg inline-block">{txn.reference || 'N/A'}</p>
                   </td>
-                  <td className="px-8 py-6">
-                    <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${
-                      txn.status === 'completed' ? 'bg-emerald-100 text-emerald-600' : 
-                      txn.status === 'pending' ? 'bg-amber-100 text-amber-600' : 'bg-red-100 text-red-600'
+                  <td className="px-8 py-7">
+                    <span className={`px-4 py-1.5 rounded-2xl text-[10px] font-black uppercase tracking-widest border ${
+                      txn.status === 'completed' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 
+                      txn.status === 'pending' ? 'bg-amber-50 text-amber-600 border-amber-100' : 'bg-red-50 text-red-600 border-red-100'
                     }`}>{txn.status}</span>
                   </td>
-                  <td className="px-8 py-6 text-right">
-                    <p className={`font-black text-base tracking-tight ${
+                  <td className="px-8 py-7 text-right">
+                    <p className={`font-black text-2xl tracking-tighter ${
                       txn.type.includes('in') || txn.type === 'deposit' || txn.type === 'loan_disbursement' ? 'text-emerald-600' : 'text-zinc-900'
                     }`}>
                       {txn.type.includes('in') || txn.type === 'deposit' || txn.type === 'loan_disbursement' ? '+' : '-'}{formatCurrency(txn.amount)}
                     </p>
                   </td>
-                  <td className="px-8 py-6 text-right">
+                  <td className="px-8 py-7 text-right sticky right-0 bg-white group-hover:bg-zinc-50/50 z-10 border-b border-zinc-100 transition-colors backdrop-blur-md">
                     <button 
                       onClick={() => downloadReceipt(txn.id)}
-                      className="w-10 h-10 rounded-xl bg-zinc-50 flex items-center justify-center text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition-all"
+                      className="w-12 h-12 rounded-2xl bg-zinc-100 flex items-center justify-center text-zinc-400 hover:text-zinc-900 hover:bg-zinc-200 transition-all shadow-sm active:scale-90"
                     >
-                      <ArrowDownLeft className="w-5 h-5 rotate-180" />
+                      <ArrowDownLeft className="w-6 h-6 rotate-180" />
                     </button>
                   </td>
                 </tr>
