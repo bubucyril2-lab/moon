@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
+import BottomNav from './components/BottomNav';
 import Footer from './components/Footer';
 import Home from './pages/Home';
 import About from './pages/About';
@@ -54,7 +55,7 @@ function AppContent() {
     <div className={`min-h-screen font-sans text-zinc-900 ${isAuthenticated ? 'lg:flex' : ''}`}>
       <Navbar />
       {isAuthenticated && <Sidebar />}
-      <main className={`flex-1 min-w-0 ${isAuthenticated ? 'h-screen overflow-y-auto no-scrollbar' : ''}`}>
+      <main className={`flex-1 min-w-0 ${isAuthenticated ? 'h-screen overflow-y-auto no-scrollbar pb-24 lg:pb-0' : ''}`}>
         <Routes>
           <Route path="/" element={<PublicSiteRoute><Home /></PublicSiteRoute>} />
           <Route path="/about" element={<PublicSiteRoute><About /></PublicSiteRoute>} />
@@ -83,6 +84,7 @@ function AppContent() {
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </main>
+      {isAuthenticated && <BottomNav />}
       {!isAuthenticated && <Footer />}
     </div>
   );

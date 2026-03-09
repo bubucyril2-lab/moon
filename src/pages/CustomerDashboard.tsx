@@ -1185,29 +1185,29 @@ const ChatView = () => {
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col bg-white">
         {/* Chat Header */}
-        <div className="px-8 py-6 border-b border-zinc-100 flex items-center justify-between bg-white/80 backdrop-blur-md sticky top-0 z-10">
+        <div className="px-4 md:px-8 py-4 md:py-6 border-b border-zinc-100 flex items-center justify-between bg-white/80 backdrop-blur-md sticky top-0 z-10">
           <div className="flex items-center gap-4">
             <div className="relative">
-              <div className="w-12 h-12 bg-zinc-100 rounded-2xl flex items-center justify-center">
-                <Users className="w-6 h-6 text-zinc-400" />
+              <div className="w-10 h-10 md:w-12 md:h-12 bg-zinc-100 rounded-xl md:rounded-2xl flex items-center justify-center">
+                <Users className="w-5 h-5 md:w-6 md:h-6 text-zinc-400" />
               </div>
-              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full" />
+              <div className="absolute -bottom-1 -right-1 w-3 h-3 md:w-4 md:h-4 bg-emerald-500 border-2 border-white rounded-full" />
             </div>
             <div>
-              <h3 className="font-black text-zinc-900 tracking-tight">Moonstone Support</h3>
-              <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">Always Online</p>
+              <h3 className="font-black text-zinc-900 tracking-tight text-sm md:text-base">Moonstone Support</h3>
+              <p className="text-[9px] md:text-[10px] font-bold text-emerald-500 uppercase tracking-widest">Always Online</p>
             </div>
           </div>
           <button 
             onClick={() => session && fetchMessages(session.id)}
-            className="w-10 h-10 rounded-xl bg-zinc-50 flex items-center justify-center text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition-all"
+            className="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-zinc-50 flex items-center justify-center text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition-all"
           >
-            <History className="w-5 h-5" />
+            <History className="w-4 h-4 md:w-5 md:h-5" />
           </button>
         </div>
 
         {/* Messages View */}
-        <div className="flex-1 overflow-y-auto p-8 space-y-6 no-scrollbar">
+        <div className="flex-1 overflow-y-auto p-4 md:p-8 space-y-6 no-scrollbar">
           {messages.length === 0 && (
             <div className="h-full flex flex-col items-center justify-center text-center max-w-xs mx-auto">
               <div className="w-20 h-20 bg-zinc-50 rounded-[2rem] flex items-center justify-center mb-6">
@@ -1254,8 +1254,8 @@ const ChatView = () => {
         </div>
 
         {/* Input Area */}
-        <div className="p-8 bg-white border-t border-zinc-100">
-          <div className="flex items-center gap-4 bg-zinc-50 p-2 rounded-[2rem] border border-zinc-200/60 focus-within:border-emerald-500/50 focus-within:ring-4 focus-within:ring-emerald-500/5 transition-all">
+        <div className="p-4 md:p-8 bg-white border-t border-zinc-100">
+          <div className="flex items-center gap-2 md:gap-4 bg-zinc-50 p-1.5 md:p-2 rounded-[1.5rem] md:rounded-[2rem] border border-zinc-200/60 focus-within:border-emerald-500/50 focus-within:ring-4 focus-within:ring-emerald-500/5 transition-all">
             <div className="relative">
               <input 
                 type="file" 
@@ -1266,13 +1266,13 @@ const ChatView = () => {
               />
               <label 
                 htmlFor="chat-file" 
-                className={`w-12 h-12 rounded-2xl flex items-center justify-center cursor-pointer hover:bg-white hover:shadow-sm transition-all ${uploading ? 'opacity-50' : ''}`}
+                className={`w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl flex items-center justify-center cursor-pointer hover:bg-white hover:shadow-sm transition-all ${uploading ? 'opacity-50' : ''}`}
               >
-                <Paperclip className="w-5 h-5 text-zinc-400" />
+                <Paperclip className="w-4 h-4 md:w-5 md:h-5 text-zinc-400" />
               </label>
             </div>
             <input 
-              className="flex-1 bg-transparent border-none outline-none px-2 py-3 font-medium text-zinc-900 placeholder:text-zinc-400"
+              className="flex-1 bg-transparent border-none outline-none px-1 md:px-2 py-2 md:py-3 font-medium text-zinc-900 placeholder:text-zinc-400 text-sm md:text-base"
               placeholder="Type your message..."
               value={input}
               onChange={e => setInput(e.target.value)}
@@ -1280,9 +1280,9 @@ const ChatView = () => {
             />
             <button 
               onClick={() => sendMessage()} 
-              className="w-12 h-12 bg-zinc-900 text-white rounded-2xl flex items-center justify-center hover:bg-zinc-800 transition-all shadow-lg shadow-zinc-900/20 active:scale-95"
+              className="w-10 h-10 md:w-12 md:h-12 bg-zinc-900 text-white rounded-xl md:rounded-2xl flex items-center justify-center hover:bg-zinc-800 transition-all shadow-lg shadow-zinc-900/20 active:scale-95"
             >
-              <Send className="w-5 h-5 text-emerald-400" />
+              <Send className="w-4 h-4 md:w-5 md:h-5 text-emerald-400" />
             </button>
           </div>
         </div>

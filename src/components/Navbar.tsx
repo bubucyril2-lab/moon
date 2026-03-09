@@ -116,10 +116,20 @@ const Navbar = () => {
       <div className="bg-white/80 backdrop-blur-xl border-b border-zinc-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
-          <Link to="/" className="flex items-center gap-2">
-            <Landmark className="w-8 h-8 text-emerald-600" />
-            <span className="text-xl font-bold text-zinc-900 tracking-tight">Moonstone</span>
-          </Link>
+          <div className="flex items-center gap-4">
+            {/* Mobile Menu Button - Moved to Left */}
+            <button 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden p-2 text-zinc-600 hover:bg-zinc-100 rounded-lg transition-colors"
+            >
+              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+
+            <Link to="/" className="flex items-center gap-2">
+              <Landmark className="w-8 h-8 text-emerald-600" />
+              <span className="text-xl font-bold text-zinc-900 tracking-tight">Moonstone</span>
+            </Link>
+          </div>
 
           <div className="hidden md:flex items-center gap-8">
             <Link to="/" className="text-sm font-medium text-zinc-600 hover:text-emerald-600 transition-colors">Home</Link>
@@ -170,14 +180,6 @@ const Navbar = () => {
                 </>
               )}
             </div>
-
-            {/* Mobile Menu Button */}
-            <button 
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 text-zinc-600 hover:bg-zinc-100 rounded-lg transition-colors"
-            >
-              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
           </div>
         </div>
       </div>
@@ -199,11 +201,11 @@ const Navbar = () => {
         
         {/* Menu Content */}
         <motion.div 
-          initial={{ x: '100%' }}
+          initial={{ x: '-100%' }}
           animate={{ x: 0 }}
-          exit={{ x: '100%' }}
+          exit={{ x: '-100%' }}
           transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-          className="absolute right-0 top-0 bottom-0 w-[85%] max-w-sm bg-white shadow-2xl flex flex-col overflow-hidden"
+          className="absolute left-0 top-0 bottom-0 w-[85%] max-w-sm bg-white shadow-2xl flex flex-col overflow-hidden"
         >
           <div className="p-6 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/50">
             <div className="flex items-center gap-2">

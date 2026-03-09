@@ -26,7 +26,8 @@ import {
   Palette,
   Layout,
   Calendar,
-  LogOut
+  LogOut,
+  ArrowLeft
 } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -859,9 +860,9 @@ const AdminChatView = () => {
 
   return (
     <div className="max-w-6xl mx-auto">
-      <div className="bg-white rounded-[2.5rem] border border-zinc-200 h-[800px] flex overflow-hidden shadow-2xl shadow-zinc-200/50">
+      <div className="bg-white rounded-[2.5rem] border border-zinc-200 h-[800px] flex overflow-hidden shadow-2xl shadow-zinc-200/50 relative">
         {/* Sessions Sidebar */}
-        <div className="w-80 border-r border-zinc-100 flex flex-col bg-zinc-50/30">
+        <div className={`${activeSession ? 'hidden lg:flex' : 'flex'} w-full lg:w-80 border-r border-zinc-100 flex-col bg-zinc-50/30`}>
         <div className="p-8 border-b border-zinc-100 bg-white">
           <h3 className="text-lg font-black text-zinc-900 tracking-tight mb-6">Customer Support</h3>
           <div className="relative">
@@ -909,16 +910,22 @@ const AdminChatView = () => {
       </div>
 
       {/* Chat Window */}
-      <div className="flex-1 flex flex-col bg-white">
+      <div className={`${activeSession ? 'flex' : 'hidden lg:flex'} flex-1 flex flex-col bg-white`}>
         {activeSession ? (
           <>
-            <div className="p-6 md:p-8 bg-white border-b border-zinc-100 flex items-center justify-between">
+            <div className="p-4 md:p-8 bg-white border-b border-zinc-100 flex items-center justify-between">
               <div className="flex items-center gap-4">
+                <button 
+                  onClick={() => setActiveSession(null)}
+                  className="lg:hidden w-10 h-10 rounded-xl bg-zinc-50 flex items-center justify-center text-zinc-400 hover:text-zinc-900"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                </button>
                 <div className="w-10 h-10 rounded-2xl bg-zinc-100 overflow-hidden border border-zinc-200">
                   {activeSession.profile_picture && <img src={activeSession.profile_picture} className="w-full h-full object-cover" referrerPolicy="no-referrer" />}
                 </div>
                 <div>
-                  <p className="font-black text-zinc-900 tracking-tight">{activeSession.first_name} {activeSession.last_name}</p>
+                  <p className="font-black text-zinc-900 tracking-tight text-sm md:text-base">{activeSession.first_name} {activeSession.last_name}</p>
                   <div className="flex items-center gap-1.5 mt-0.5">
                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                     <p className="text-[10px] text-zinc-400 font-black uppercase tracking-widest">Active Session</p>
@@ -927,12 +934,12 @@ const AdminChatView = () => {
               </div>
               <button 
                 onClick={() => fetchMessages(activeSession.id)}
-                className="px-4 py-2 bg-zinc-50 hover:bg-zinc-100 rounded-xl text-[10px] font-black text-zinc-600 uppercase tracking-widest transition-all flex items-center gap-2 border border-zinc-200"
+                className="hidden sm:flex px-4 py-2 bg-zinc-50 hover:bg-zinc-100 rounded-xl text-[10px] font-black text-zinc-600 uppercase tracking-widest transition-all items-center gap-2 border border-zinc-200"
               >
                 <Activity className="w-3 h-3" /> Sync History
               </button>
             </div>
-            <div className="flex-1 overflow-y-auto p-8 space-y-6 no-scrollbar bg-zinc-50/30">
+            <div className="flex-1 overflow-y-auto p-4 md:p-8 space-y-6 no-scrollbar bg-zinc-50/30">
               {messages.map((msg, i) => (
                 <div key={i} className={`flex ${msg.sender_id === 'admin' ? 'justify-end' : 'justify-start'}`}>
                   <div className={`max-w-[70%] p-5 rounded-[1.5rem] text-sm font-medium shadow-sm ${
@@ -954,15 +961,15 @@ const AdminChatView = () => {
                 </div>
               )}
             </div>
-            <div className="p-8 bg-white border-t border-zinc-100 flex gap-4">
+            <div className="p-4 md:p-8 bg-white border-t border-zinc-100 flex flex-col md:flex-row gap-4">
               <input 
-                className="flex-1 px-6 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl outline-none focus:ring-2 focus:ring-zinc-900 transition-all font-medium"
-                placeholder="Type your response to the customer..."
+                className="flex-1 px-6 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl outline-none focus:ring-2 focus:ring-zinc-900 transition-all font-medium text-sm md:text-base"
+                placeholder="Type your response..."
                 value={input}
                 onChange={e => setInput(e.target.value)}
                 onKeyPress={e => e.key === 'Enter' && sendMessage()}
               />
-              <button onClick={sendMessage} className="bg-zinc-900 text-white px-8 py-4 rounded-2xl font-black tracking-tight hover:bg-zinc-800 transition-all shadow-xl shadow-zinc-200">
+              <button onClick={sendMessage} className="bg-zinc-900 text-white px-8 py-4 rounded-2xl font-black tracking-tight hover:bg-zinc-800 transition-all shadow-xl shadow-zinc-200 text-sm md:text-base">
                 Send Reply
               </button>
             </div>
