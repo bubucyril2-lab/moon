@@ -10,48 +10,46 @@ service cloud.firestore {
     // User profiles
     match /users/{userId} {
       allow read: if request.auth != null && (request.auth.uid == userId || isAdmin());
-      allow write: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      allow delete: if isAdmin();
     }
 
     // Bank accounts
     match /accounts/{userId} {
       allow read: if request.auth != null && (request.auth.uid == userId || isAdmin());
-      allow write: if isAdmin();
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      allow delete: if isAdmin();
     }
 
     // Transactions
     match /transactions/{transactionId} {
       allow read: if request.auth != null && (resource.data.user_id == request.auth.uid || isAdmin());
-      allow create: if request.auth != null;
+      allow create: if request.auth != null && request.resource.data.user_id == request.auth.uid;
       allow update, delete: if isAdmin();
     }
 
     // Beneficiaries
     match /beneficiaries/{beneficiaryId} {
-      allow read, write: if request.auth != null && (
-        (resource == null || resource.data.user_id == request.auth.uid) &&
-        (request.resource == null || request.resource.data.user_id == request.auth.uid)
-      );
+      allow read: if request.auth != null && (resource.data.user_id == request.auth.uid || isAdmin());
+      allow create: if request.auth != null && request.resource.data.user_id == request.auth.uid;
+      allow update: if request.auth != null && (resource.data.user_id == request.auth.uid || isAdmin());
+      allow delete: if request.auth != null && (resource.data.user_id == request.auth.uid || isAdmin());
     }
 
     // Loan applications
     match /loans/{loanId} {
       allow read: if request.auth != null && (resource.data.user_id == request.auth.uid || isAdmin());
-      allow create: if request.auth != null;
+      allow create: if request.auth != null && request.resource.data.user_id == request.auth.uid;
       allow update, delete: if isAdmin();
-    }
-
-    // System settings
-    match /system_settings/{settingId} {
-      allow read: if true;
-      allow write: if isAdmin();
     }
 
     // Support chat sessions
     match /chat_sessions/{sessionId} {
-      allow read: if request.auth != null && (resource.data.customer_id == request.auth.uid || isAdmin());
-      allow create: if request.auth != null;
-      allow update: if request.auth != null && (resource.data.customer_id == request.auth.uid || isAdmin());
+      allow read: if request.auth != null && (resource.data.customerId == request.auth.uid || isAdmin());
+      allow create: if request.auth != null && request.resource.data.customerId == request.auth.uid;
+      allow update: if request.auth != null && (resource.data.customerId == request.auth.uid || isAdmin());
     }
 
     // Chat messages
@@ -59,9 +57,9 @@ service cloud.firestore {
       allow read: if request.auth != null && (
         resource.data.sender_id == request.auth.uid || 
         isAdmin() ||
-        get(/databases/$(database)/documents/chat_sessions/$(resource.data.session_id)).data.customer_id == request.auth.uid
+        get(/databases/$(database)/documents/chat_sessions/$(resource.data.session_id)).data.customerId == request.auth.uid
       );
-      allow create: if request.auth != null;
+      allow create: if request.auth != null && request.resource.data.sender_id == request.auth.uid;
     }
   }
 }

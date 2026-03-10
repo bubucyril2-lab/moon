@@ -88,15 +88,18 @@ const Navbar = () => {
       {/* Top Utility Bar */}
       <div className="bg-zinc-900 text-white py-2 border-b border-white/5 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center gap-2">
-          <div className="flex items-center gap-3 sm:gap-6 overflow-x-auto no-scrollbar">
+          <div className="flex items-center gap-4 sm:gap-6 overflow-x-auto no-scrollbar">
+            <Link to="/" className="text-[10px] font-black uppercase tracking-widest hover:text-emerald-400 transition-colors flex items-center gap-1.5 whitespace-nowrap">
+              <Landmark className="w-3 h-3" /> <span>Home</span>
+            </Link>
             <Link to="/services" className="text-[10px] font-black uppercase tracking-widest hover:text-emerald-400 transition-colors flex items-center gap-1.5 whitespace-nowrap">
-              <Briefcase className="w-3 h-3" /> <span className="hidden xs:inline">Services</span>
+              <Briefcase className="w-3 h-3" /> <span>Services</span>
             </Link>
             <Link to="/about" className="text-[10px] font-black uppercase tracking-widest hover:text-emerald-400 transition-colors flex items-center gap-1.5 whitespace-nowrap">
-              <Info className="w-3 h-3" /> <span className="hidden xs:inline">About</span>
+              <Info className="w-3 h-3" /> <span>About</span>
             </Link>
             <Link to="/contact" className="text-[10px] font-black uppercase tracking-widest hover:text-emerald-400 transition-colors flex items-center gap-1.5 whitespace-nowrap">
-              <Phone className="w-3 h-3" /> <span className="hidden xs:inline">Contact</span>
+              <Phone className="w-3 h-3" /> <span>Contact</span>
             </Link>
           </div>
           <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
@@ -117,10 +120,10 @@ const Navbar = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
           <div className="flex items-center gap-4">
-            {/* Mobile Menu Button - Moved to Left */}
+            {/* Mobile Menu Button - Hidden as per request */}
             <button 
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 text-zinc-600 hover:bg-zinc-100 rounded-lg transition-colors"
+              className="hidden p-2 text-zinc-600 hover:bg-zinc-100 rounded-lg transition-colors"
             >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -131,15 +134,15 @@ const Navbar = () => {
             </Link>
           </div>
 
-          <div className="hidden md:flex items-center gap-8">
-            <Link to="/" className="text-sm font-medium text-zinc-600 hover:text-emerald-600 transition-colors">Home</Link>
+          <div className="flex items-center gap-4 sm:gap-8 overflow-x-auto no-scrollbar">
+            <Link to="/" className="text-sm font-medium text-zinc-600 hover:text-emerald-600 transition-colors whitespace-nowrap">Home</Link>
             {isAuthenticated && (
-              <Link to={dashboardPath} className="text-sm font-medium text-zinc-600 hover:text-emerald-600 transition-colors">Dashboard</Link>
+              <Link to={dashboardPath} className="text-sm font-medium text-zinc-600 hover:text-emerald-600 transition-colors whitespace-nowrap">Dashboard</Link>
             )}
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="hidden md:flex items-center gap-4">
+            <div className="flex items-center gap-4">
               {isAuthenticated ? (
                 <>
                   <Link 

@@ -1177,7 +1177,7 @@ const AdminDashboard = () => {
   if (loading) return <div className="flex items-center justify-center h-[80vh]">Loading Admin Panel...</div>;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 relative overflow-hidden">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 relative overflow-hidden bg-transparent">
       <div className="flex flex-col gap-10">
         {/* Admin Content */}
         <main className="flex-1 min-w-0">
