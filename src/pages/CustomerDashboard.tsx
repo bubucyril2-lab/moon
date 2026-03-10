@@ -172,7 +172,7 @@ const CustomerDashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-transparent text-zinc-900 relative overflow-hidden">
+    <div className="min-h-screen bg-transparent text-white relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
         <div className="flex flex-col gap-8">
           {/* Header Section */}
@@ -196,10 +196,10 @@ const CustomerDashboard = () => {
                 <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-emerald-500 border-2 border-white rounded-full shadow-sm" />
               </div>
               <div>
-                <h1 className="text-2xl md:text-4xl font-black text-zinc-900 tracking-tight">
+                <h1 className="text-2xl md:text-4xl font-black text-white tracking-tight">
                   Hello, {user?.first_name} {user?.last_name}
                 </h1>
-                <p className="text-zinc-500 font-medium text-sm md:text-base">
+                <p className="text-white font-medium text-sm md:text-base">
                   Welcome back to your Moonstone account.
                 </p>
               </div>
@@ -207,7 +207,7 @@ const CustomerDashboard = () => {
             
             <div className="flex items-center gap-3">
               <div className="hidden lg:flex flex-col items-end mr-4">
-                <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Server Time</p>
+                <p className="text-[10px] font-bold text-white uppercase tracking-widest">Server Time</p>
                 <p className="text-sm font-mono font-bold text-zinc-600">{new Date().toLocaleTimeString()}</p>
               </div>
             </div>
@@ -249,7 +249,7 @@ const CustomerDashboard = () => {
                       <div className="bg-zinc-900 rounded-[2.5rem] p-10 text-white shadow-2xl shadow-zinc-900/40 relative overflow-hidden group">
                         <div className="relative z-10">
                           <div className="flex justify-between items-start mb-4">
-                            <p className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em]">Available Balance</p>
+                            <p className="text-[10px] font-black text-white uppercase tracking-[0.2em]">Available Balance</p>
                             <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center group-hover:bg-emerald-500 transition-colors">
                               <Wallet className="w-5 h-5 text-emerald-400 group-hover:text-white" />
                             </div>
@@ -262,7 +262,7 @@ const CustomerDashboard = () => {
                           <div className="mt-10 pt-8 border-t border-white/10">
                             <div className="flex justify-between items-center">
                               <div>
-                                <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1">Account ID</p>
+                                <p className="text-[10px] font-black text-white uppercase tracking-widest mb-1">Account ID</p>
                                 <p className="font-mono text-sm font-bold tracking-[0.2em] text-zinc-300">{data?.account?.account_number}</p>
                               </div>
                               <div className="px-3 py-1 bg-emerald-500/10 text-emerald-400 rounded-lg text-[10px] font-black uppercase tracking-widest border border-emerald-500/20">
@@ -279,12 +279,12 @@ const CustomerDashboard = () => {
 
                     {/* Income/Expense & Quick Actions */}
                     <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="bg-white/70 backdrop-blur-xl rounded-[2.5rem] p-10 border border-zinc-200/60 shadow-sm flex flex-col justify-between group hover:border-emerald-500/30 transition-all hover:shadow-2xl hover:-translate-y-1">
+                      <div className="bg-white/5 backdrop-blur-xl rounded-[2.5rem] p-10 border border-white/10 shadow-sm flex flex-col justify-between group hover:border-emerald-500/30 transition-all hover:shadow-2xl hover:-translate-y-1">
                         <div>
                           <div className="w-16 h-16 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 mb-8 group-hover:scale-110 transition-transform border border-emerald-100 shadow-sm">
                             <ArrowDownLeft className="w-8 h-8" />
                           </div>
-                          <p className="text-zinc-400 font-black text-[10px] uppercase tracking-[0.2em] mb-3">Monthly Inflow</p>
+                          <p className="text-white font-black text-[10px] uppercase tracking-[0.2em] mb-3">Monthly Inflow</p>
                           <h3 className="text-4xl md:text-5xl font-black text-zinc-900 tracking-tighter">
                             {formatCurrency(data?.income || 0)}
                           </h3>
@@ -293,7 +293,7 @@ const CustomerDashboard = () => {
                           <div className="flex items-center gap-2">
                             <div className="flex -space-x-3">
                               {[1, 2, 3].map(i => (
-                                <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-zinc-100 shadow-sm" />
+                                <div key={i} className="w-8 h-8 rounded-full border-2 border-white/20 bg-white/10 shadow-sm" />
                               ))}
                             </div>
                             <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest ml-2">+12.5%</p>
@@ -307,14 +307,14 @@ const CustomerDashboard = () => {
                           <div className="w-16 h-16 rounded-2xl bg-red-50 flex items-center justify-center text-red-600 mb-8 group-hover:scale-110 transition-transform border border-red-100 shadow-sm">
                             <ArrowUpRight className="w-8 h-8" />
                           </div>
-                          <p className="text-zinc-400 font-black text-[10px] uppercase tracking-[0.2em] mb-3">Monthly Outflow</p>
+                          <p className="text-white font-black text-[10px] uppercase tracking-[0.2em] mb-3">Monthly Outflow</p>
                           <h3 className="text-4xl md:text-5xl font-black text-zinc-900 tracking-tighter">
                             {formatCurrency(data?.expense || 0)}
                           </h3>
                         </div>
                         <div className="mt-10">
                           <div className="flex justify-between items-center mb-2">
-                            <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Budget Usage</p>
+                            <p className="text-[10px] font-black text-white uppercase tracking-widest">Budget Usage</p>
                             <p className="text-[10px] font-black text-red-600 uppercase tracking-widest">65%</p>
                           </div>
                           <div className="w-full h-2 bg-zinc-100 rounded-full overflow-hidden border border-zinc-200/50">
@@ -328,7 +328,7 @@ const CustomerDashboard = () => {
                         <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-10">
                           <div className="text-center lg:text-left">
                             <h3 className="text-3xl font-black tracking-tight mb-3">Quick Actions</h3>
-                            <p className="text-zinc-400 font-medium max-w-xs">Securely manage your assets and transfers with instant verification.</p>
+                            <p className="text-white font-medium max-w-xs">Securely manage your assets and transfers with instant verification.</p>
                           </div>
                           <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 w-full lg:w-auto">
                             {[
@@ -345,7 +345,7 @@ const CustomerDashboard = () => {
                                 <div className={`w-20 h-20 ${btn.color} rounded-[1.75rem] flex items-center justify-center shadow-xl group-hover:-translate-y-2 transition-all duration-300 border border-white/10 group-hover:shadow-emerald-500/20`}>
                                   <btn.icon className="w-8 h-8" />
                                 </div>
-                                <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 group-hover:opacity-100 transition-opacity">{btn.label}</span>
+                                <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-100 group-hover:opacity-100 transition-opacity">{btn.label}</span>
                               </button>
                             ))}
                           </div>
@@ -365,7 +365,7 @@ const CustomerDashboard = () => {
                       <div className="flex items-center justify-between mb-10">
                         <div>
                           <h3 className="text-xl font-black text-zinc-900 tracking-tight">Cash Flow Analysis</h3>
-                          <p className="text-zinc-400 text-sm font-medium">Your income vs expenses over the last 7 days</p>
+                          <p className="text-white text-sm font-medium">Your income vs expenses over the last 7 days</p>
                         </div>
                         <div className="flex items-center gap-4">
                           <div className="flex items-center gap-2">
@@ -433,9 +433,9 @@ const CustomerDashboard = () => {
                     </div>
 
                     {/* Recent Transactions Sidebar */}
-                    <div className="lg:col-span-4 bg-white rounded-[2.5rem] border border-zinc-200/60 shadow-sm flex flex-col">
+                    <div className="lg:col-span-4 bg-white/5 backdrop-blur-xl rounded-[2.5rem] border border-white/10 shadow-sm flex flex-col">
                       <div className="p-8 border-b border-zinc-100 flex items-center justify-between">
-                        <h3 className="text-xl font-black text-zinc-900 tracking-tight">Activity</h3>
+                        <h3 className="text-xl font-black text-white tracking-tight">Activity</h3>
                         <button 
                           onClick={() => setActiveTab('history')} 
                           className="w-10 h-10 rounded-xl bg-zinc-50 flex items-center justify-center text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition-all"
@@ -455,13 +455,13 @@ const CustomerDashboard = () => {
                                     {txn.type.includes('in') || txn.type === 'deposit' || txn.type === 'loan_disbursement' ? <ArrowDownLeft className="w-5 h-5" /> : <ArrowUpRight className="w-5 h-5" />}
                                   </div>
                                   <div>
-                                    <p className="font-bold text-zinc-900 text-sm truncate max-w-[120px]">{txn.description}</p>
-                                    <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">{new Date(txn.created_at).toLocaleDateString()}</p>
+                                    <p className="font-bold text-white text-sm truncate max-w-[120px]">{txn.description}</p>
+                                    <p className="text-[10px] font-bold text-white uppercase tracking-widest">{new Date(txn.created_at).toLocaleDateString()}</p>
                                   </div>
                                 </div>
                                 <div className="text-right">
                                   <p className={`font-black text-sm ${
-                                    txn.type.includes('in') || txn.type === 'deposit' || txn.type === 'loan_disbursement' ? 'text-emerald-600' : 'text-zinc-900'
+                                    txn.type.includes('in') || txn.type === 'deposit' || txn.type === 'loan_disbursement' ? 'text-emerald-400' : 'text-white'
                                   }`}>
                                     {txn.type.includes('in') || txn.type === 'deposit' || txn.type === 'loan_disbursement' ? '+' : '-'}{formatCurrency(txn.amount)}
                                   </p>
@@ -477,7 +477,7 @@ const CustomerDashboard = () => {
                             <div className="w-16 h-16 bg-zinc-50 rounded-full flex items-center justify-center mx-auto mb-4">
                               <History className="w-8 h-8 text-zinc-200" />
                             </div>
-                            <p className="text-zinc-400 font-bold text-sm">No activity yet</p>
+                            <p className="text-white font-bold text-sm">No activity yet</p>
                           </div>
                         )}
                       </div>
@@ -587,7 +587,7 @@ const TransferView = ({ onComplete }: { onComplete: () => void }) => {
         <div className="flex flex-col md:flex-row gap-8 mb-12">
           <div className="flex-1">
             <h2 className="text-3xl font-black text-zinc-900 tracking-tight mb-2">Transfer Funds</h2>
-            <p className="text-zinc-500 font-medium">Send money securely to any bank account worldwide.</p>
+            <p className="text-white font-medium">Send money securely to any bank account worldwide.</p>
           </div>
           <div className="flex p-1.5 bg-zinc-100 rounded-2xl h-fit">
             <button 
@@ -608,7 +608,7 @@ const TransferView = ({ onComplete }: { onComplete: () => void }) => {
         <form onSubmit={handleTransfer} className="space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-3">
-              <label className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">Recipient Details</label>
+              <label className="text-[10px] font-black text-white uppercase tracking-[0.2em]">Recipient Details</label>
               <input 
                 required
                 className="w-full px-6 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all font-medium"
@@ -626,7 +626,7 @@ const TransferView = ({ onComplete }: { onComplete: () => void }) => {
             </div>
 
             <div className="space-y-3">
-              <label className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">Bank Information</label>
+              <label className="text-[10px] font-black text-white uppercase tracking-[0.2em]">Bank Information</label>
               <input 
                 required
                 className="w-full px-6 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all font-medium"
@@ -648,7 +648,7 @@ const TransferView = ({ onComplete }: { onComplete: () => void }) => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-3">
-              <label className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">Transaction Details</label>
+              <label className="text-[10px] font-black text-white uppercase tracking-[0.2em]">Transaction Details</label>
               <div className="relative">
                 <span className="absolute left-6 top-1/2 -translate-y-1/2 font-black text-zinc-400">$</span>
                 <input 
@@ -670,7 +670,7 @@ const TransferView = ({ onComplete }: { onComplete: () => void }) => {
             </div>
 
             <div className="space-y-3">
-              <label className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">Security Confirmation</label>
+              <label className="text-[10px] font-black text-white uppercase tracking-[0.2em]">Security Confirmation</label>
               <div className="bg-emerald-50 rounded-2xl p-6 border border-emerald-100 mb-4">
                 <p className="text-xs text-emerald-700 font-bold leading-relaxed">
                   Please enter your 4-digit Transfer PIN to authorize this transaction. This action cannot be undone.
@@ -721,7 +721,7 @@ const TransferView = ({ onComplete }: { onComplete: () => void }) => {
               <CheckCircle2 className="w-12 h-12" />
             </div>
             <h2 className="text-4xl font-black text-zinc-900 mb-4 tracking-tighter uppercase">INITIATED</h2>
-            <p className="text-zinc-500 text-lg font-medium leading-relaxed mb-10">
+            <p className="text-white text-lg font-medium leading-relaxed mb-10">
               Your transfer of <span className="text-zinc-900 font-black">{formatCurrency(parseFloat(formData.amount || '0'))}</span> has been initiated and is awaiting verification.
             </p>
             <button 
@@ -778,7 +778,7 @@ const BeneficiaryView = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
           <h2 className="text-4xl font-black text-zinc-900 tracking-tight mb-2">Beneficiaries</h2>
-          <p className="text-zinc-500 font-medium">Manage your trusted recipients for instant transfers.</p>
+          <p className="text-white font-medium">Manage your trusted recipients for instant transfers.</p>
         </div>
         <button 
           onClick={() => setShowAdd(!showAdd)}
@@ -805,16 +805,16 @@ const BeneficiaryView = () => {
             <h3 className="text-2xl font-black mb-8 tracking-tight">New Beneficiary</h3>
             <form onSubmit={handleAdd} className="space-y-6">
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Full Name</label>
+                <label className="text-[10px] font-black text-white uppercase tracking-widest">Full Name</label>
                 <input required className="w-full px-6 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none font-bold" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Account Number</label>
+                  <label className="text-[10px] font-black text-white uppercase tracking-widest">Account Number</label>
                   <input required className="w-full px-6 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none font-mono" value={formData.account_number} onChange={e => setFormData({...formData, account_number: e.target.value})} />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Bank Name</label>
+                  <label className="text-[10px] font-black text-white uppercase tracking-widest">Bank Name</label>
                   <input required className="w-full px-6 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none font-bold" value={formData.bank_name} onChange={e => setFormData({...formData, bank_name: e.target.value})} />
                 </div>
               </div>
@@ -840,9 +840,9 @@ const BeneficiaryView = () => {
                 </button>
               </div>
               <h4 className="font-black text-zinc-900 text-xl mb-1 tracking-tight">{b.name}</h4>
-              <p className="text-zinc-400 font-bold text-xs uppercase tracking-widest mb-6">{b.bank_name}</p>
+              <p className="text-white font-bold text-xs uppercase tracking-widest mb-6">{b.bank_name}</p>
               <div className="pt-6 border-t border-zinc-100 flex justify-between items-center">
-                <p className="text-xs font-mono font-bold text-zinc-400 tracking-wider">{b.account_number}</p>
+                <p className="text-xs font-mono font-bold text-white tracking-wider">{b.account_number}</p>
                 <button 
                   onClick={() => {
                     alert('Transfer feature for beneficiaries coming soon!');
@@ -863,7 +863,7 @@ const BeneficiaryView = () => {
               <Users className="w-10 h-10 text-zinc-200" />
             </div>
             <h3 className="text-zinc-900 font-black text-2xl mb-2 tracking-tight">No beneficiaries yet</h3>
-            <p className="text-zinc-500 font-medium mb-10">Add your first recipient to start sending money faster.</p>
+            <p className="text-white font-medium mb-10">Add your first recipient to start sending money faster.</p>
             <button onClick={() => setShowAdd(true)} className="bg-zinc-900 text-white px-10 py-4 rounded-2xl font-black shadow-2xl shadow-zinc-900/20 hover:bg-zinc-800 transition-all">Add Now</button>
           </div>
         )}
@@ -956,12 +956,12 @@ const LoanView = ({ onComplete }: { onComplete: () => void }) => {
               <TrendingUp className="w-7 h-7" />
             </div>
             <h2 className="text-3xl font-black text-zinc-900 tracking-tight mb-2">Apply for a Loan</h2>
-            <p className="text-zinc-500 font-medium">Get instant credit with flexible repayment options.</p>
+            <p className="text-white font-medium">Get instant credit with flexible repayment options.</p>
           </div>
 
           <form onSubmit={handleApply} className="space-y-6">
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Loan Amount</label>
+              <label className="text-[10px] font-black text-white uppercase tracking-widest">Loan Amount</label>
               <div className="relative">
                 <span className="absolute left-6 top-1/2 -translate-y-1/2 font-black text-zinc-400">$</span>
                 <input 
@@ -975,7 +975,7 @@ const LoanView = ({ onComplete }: { onComplete: () => void }) => {
               </div>
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Purpose of Loan</label>
+              <label className="text-[10px] font-black text-white uppercase tracking-widest">Purpose of Loan</label>
               <input 
                 type="text" 
                 required 
@@ -998,7 +998,7 @@ const LoanView = ({ onComplete }: { onComplete: () => void }) => {
                   'Flexible 12-48 month terms',
                   'Instant approval for qualified users'
                 ].map((term, i) => (
-                  <li key={i} className="flex items-center gap-2 text-xs text-zinc-500 font-medium">
+                  <li key={i} className="flex items-center gap-2 text-xs text-white font-medium">
                     <div className="w-1 h-1 bg-emerald-500 rounded-full" />
                     {term}
                   </li>
@@ -1021,7 +1021,7 @@ const LoanView = ({ onComplete }: { onComplete: () => void }) => {
         <div className="flex items-center justify-between mb-2">
           <h3 className="text-xl font-black text-zinc-900 tracking-tight">Active & Past Loans</h3>
           <div className="px-4 py-1.5 bg-zinc-100 rounded-full">
-            <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">{loans.length} Records</span>
+            <span className="text-[10px] font-black text-white uppercase tracking-widest">{loans.length} Records</span>
           </div>
         </div>
 
@@ -1043,13 +1043,13 @@ const LoanView = ({ onComplete }: { onComplete: () => void }) => {
                       loan.status === 'paid' ? 'bg-zinc-100 text-zinc-400' : 'bg-amber-100 text-amber-600'
                     }`}>{loan.status}</span>
                   </div>
-                  <p className="text-sm text-zinc-500 font-medium">{loan.purpose}</p>
+                  <p className="text-sm text-white font-medium">{loan.purpose}</p>
                 </div>
               </div>
               
               <div className="flex items-center justify-between md:justify-end gap-6 pt-4 md:pt-0 border-t md:border-t-0 border-zinc-100">
                 <div className="text-right hidden sm:block">
-                  <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">Applied On</p>
+                  <p className="text-[10px] font-black text-white uppercase tracking-widest mb-1">Applied On</p>
                   <p className="text-sm font-bold text-zinc-600">{new Date(loan.created_at).toLocaleDateString()}</p>
                 </div>
                 {loan.status === 'approved' && (
@@ -1073,7 +1073,7 @@ const LoanView = ({ onComplete }: { onComplete: () => void }) => {
                 <TrendingUp className="w-10 h-10 text-zinc-200" />
               </div>
               <h3 className="text-zinc-900 font-black text-xl mb-2 tracking-tight">No loan history</h3>
-              <p className="text-zinc-500 font-medium">Apply for your first loan to see it here.</p>
+              <p className="text-white font-medium">Apply for your first loan to see it here.</p>
             </div>
           )}
         </div>
@@ -1181,7 +1181,7 @@ const ChatView = () => {
                 <Shield className="w-6 h-6" />
               </div>
               <h4 className="font-bold text-zinc-900 text-sm mb-1">Secure Support</h4>
-              <p className="text-xs text-zinc-500 leading-relaxed">Your conversation is end-to-end encrypted and monitored by our security team.</p>
+              <p className="text-xs text-white leading-relaxed">Your conversation is end-to-end encrypted and monitored by our security team.</p>
             </div>
             
             <div className="bg-zinc-900 p-6 rounded-2xl text-white shadow-xl shadow-zinc-900/20">
@@ -1189,7 +1189,7 @@ const ChatView = () => {
                 <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
                 <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400">Live Status</span>
               </div>
-              <p className="text-xs font-medium text-zinc-400 leading-relaxed">Average response time: <span className="text-white font-bold">Under 5 minutes</span></p>
+              <p className="text-xs font-medium text-white leading-relaxed">Average response time: <span className="text-white font-bold">Under 5 minutes</span></p>
             </div>
           </div>
         </div>
@@ -1233,7 +1233,7 @@ const ChatView = () => {
                 <MessageSquare className="w-10 h-10 text-zinc-200" />
               </div>
               <h4 className="text-zinc-900 font-black text-xl mb-2 tracking-tight">Start a Conversation</h4>
-              <p className="text-zinc-500 text-sm font-medium">Our support team is ready to help you with any questions.</p>
+              <p className="text-white text-sm font-medium">Our support team is ready to help you with any questions.</p>
             </div>
           )}
           {messages.map((msg, i) => {
@@ -1256,14 +1256,14 @@ const ChatView = () => {
                         </div>
                         <div className="text-left">
                           <p className="font-bold truncate max-w-[150px]">{fileMatch[1]}</p>
-                          <p className="text-[10px] opacity-60 uppercase tracking-widest font-black">Download File</p>
+                          <p className="text-[10px] opacity-100 uppercase tracking-widest font-black">Download File</p>
                         </div>
                       </a>
                     ) : (
                       <p className="leading-relaxed">{msg.message_text}</p>
                     )}
                   </div>
-                  <p className={`text-[9px] font-black text-zinc-400 uppercase tracking-widest mt-2 px-2 opacity-0 group-hover:opacity-100 transition-opacity ${isMe ? 'text-right' : 'text-left'}`}>
+                  <p className={`text-[9px] font-black text-white uppercase tracking-widest mt-2 px-2 opacity-100 group-hover:opacity-100 transition-opacity ${isMe ? 'text-right' : 'text-left'}`}>
                     {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </p>
                 </div>
@@ -1321,7 +1321,7 @@ const HistoryView = ({ transactions }: { transactions: any[] }) => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
           <h2 className="text-4xl font-black text-zinc-900 tracking-tight mb-2">Transaction History</h2>
-          <p className="text-zinc-500 font-medium">A complete record of your financial activity.</p>
+          <p className="text-white font-medium">A complete record of your financial activity.</p>
         </div>
         <div className="flex items-center gap-3">
           <button className="px-6 py-3 bg-white border border-zinc-200 rounded-2xl text-sm font-bold text-zinc-600 hover:bg-zinc-50 transition-all flex items-center gap-2 shadow-sm">
@@ -1337,12 +1337,12 @@ const HistoryView = ({ transactions }: { transactions: any[] }) => {
           <table className="w-full text-left border-separate border-spacing-0">
             <thead>
               <tr className="bg-zinc-50/50">
-                <th className="px-8 py-5 text-[10px] font-black text-zinc-400 uppercase tracking-widest border-b border-zinc-100">Transaction</th>
-                <th className="px-8 py-5 text-[10px] font-black text-zinc-400 uppercase tracking-widest border-b border-zinc-100">Date & Time</th>
-                <th className="px-8 py-5 text-[10px] font-black text-zinc-400 uppercase tracking-widest border-b border-zinc-100">Reference</th>
-                <th className="px-8 py-5 text-[10px] font-black text-zinc-400 uppercase tracking-widest border-b border-zinc-100">Status</th>
-                <th className="px-8 py-5 text-[10px] font-black text-zinc-400 uppercase tracking-widest text-right border-b border-zinc-100">Amount</th>
-                <th className="px-8 py-5 text-[10px] font-black text-zinc-400 uppercase tracking-widest sticky right-0 bg-zinc-50 z-10 border-b border-zinc-100 backdrop-blur-md">Actions</th>
+                <th className="px-8 py-5 text-[10px] font-black text-white uppercase tracking-widest border-b border-zinc-100">Transaction</th>
+                <th className="px-8 py-5 text-[10px] font-black text-white uppercase tracking-widest border-b border-zinc-100">Date & Time</th>
+                <th className="px-8 py-5 text-[10px] font-black text-white uppercase tracking-widest border-b border-zinc-100">Reference</th>
+                <th className="px-8 py-5 text-[10px] font-black text-white uppercase tracking-widest border-b border-zinc-100">Status</th>
+                <th className="px-8 py-5 text-[10px] font-black text-white uppercase tracking-widest text-right border-b border-zinc-100">Amount</th>
+                <th className="px-8 py-5 text-[10px] font-black text-white uppercase tracking-widest sticky right-0 bg-zinc-50 z-10 border-b border-zinc-100 backdrop-blur-md">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-100">
@@ -1359,13 +1359,13 @@ const HistoryView = ({ transactions }: { transactions: any[] }) => {
                       </div>
                       <div>
                         <p className="font-black text-zinc-900 text-lg tracking-tight leading-none mb-1">{txn.description}</p>
-                        <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">{txn.type.replace('_', ' ')}</p>
+                        <p className="text-[10px] font-black text-white uppercase tracking-[0.2em]">{txn.type.replace('_', ' ')}</p>
                       </div>
                     </div>
                   </td>
                   <td className="px-8 py-7">
                     <p className="text-sm font-black text-zinc-900 tracking-tight">{new Date(txn.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
-                    <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mt-1">{new Date(txn.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                    <p className="text-[10px] font-black text-white uppercase tracking-widest mt-1">{new Date(txn.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                   </td>
                   <td className="px-8 py-7">
                     <p className="text-[10px] font-mono font-black text-zinc-400 tracking-[0.2em] bg-zinc-100 px-2 py-1 rounded-lg inline-block">{txn.reference || 'N/A'}</p>
@@ -1399,7 +1399,7 @@ const HistoryView = ({ transactions }: { transactions: any[] }) => {
                       <History className="w-10 h-10 text-zinc-200" />
                     </div>
                     <h3 className="text-zinc-900 font-black text-xl mb-2 tracking-tight">No transactions found</h3>
-                    <p className="text-zinc-500 font-medium">Your financial activity will appear here.</p>
+                    <p className="text-white font-medium">Your financial activity will appear here.</p>
                   </td>
                 </tr>
               )}
@@ -1611,7 +1611,7 @@ const SettingsView = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
           <h2 className="text-4xl font-black text-zinc-900 tracking-tight mb-2">Settings</h2>
-          <p className="text-zinc-500 font-medium">Manage your account preferences and security.</p>
+          <p className="text-white font-medium">Manage your account preferences and security.</p>
         </div>
       </div>
 

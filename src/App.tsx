@@ -54,14 +54,8 @@ function AppContent() {
   return (
     <div className={`min-h-screen font-sans text-zinc-900 ${isAuthenticated ? 'lg:flex relative' : ''}`}>
       {isAuthenticated && (
-        <div className="fixed inset-0 z-0 pointer-events-none">
-          {/* Top Gradient Section */}
-          <div className="absolute top-0 left-0 right-0 h-[50vh] bg-gradient-to-br from-emerald-500/15 via-teal-500/10 to-transparent" />
-          <div className="absolute top-0 left-0 right-0 h-[50vh] bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-emerald-300/20 via-transparent to-transparent" />
-          <div className="absolute top-0 left-0 right-0 h-[50vh] bg-[radial-gradient(circle_at_top_left,_var(--tw-gradient-stops))] from-teal-300/10 via-transparent to-transparent" />
-          
-          {/* Bottom White Section */}
-          <div className="absolute inset-0 bg-white z-[-1]" />
+        <div className="fixed inset-0 z-0 pointer-events-none bg-[#001b3a]">
+          <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-50" />
         </div>
       )}
       <Navbar />

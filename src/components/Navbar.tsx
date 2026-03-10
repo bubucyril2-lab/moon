@@ -104,7 +104,7 @@ const Navbar = () => {
           </div>
           <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
             <div className="flex items-center gap-1 sm:gap-2">
-              <Languages className="w-3 h-3 text-zinc-500 hidden sm:block" />
+              <Languages className="w-3 h-3 text-white hidden sm:block" />
               <div id="google_translate_element" className="scale-75 origin-right max-w-[100px] sm:max-w-none"></div>
             </div>
             {!isAuthenticated && (
@@ -158,7 +158,7 @@ const Navbar = () => {
                       />
                     ) : (
                       <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center border border-zinc-200">
-                        <User className="w-4 h-4 text-zinc-400" />
+                        <User className="w-4 h-4 text-white" />
                       </div>
                     )}
                     <span className="hidden sm:inline">My Account</span>
@@ -225,7 +225,7 @@ const Navbar = () => {
 
           <div className="flex-1 overflow-y-auto no-scrollbar p-8 space-y-10">
             <div className="space-y-4">
-              <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] ml-4">Navigation</p>
+              <p className="text-[10px] font-black text-white uppercase tracking-[0.2em] ml-4">Navigation</p>
               <div className="grid gap-2">
                 {[
                   { to: '/', label: 'Home', icon: Landmark },
@@ -239,7 +239,7 @@ const Navbar = () => {
                     className="px-6 py-4 text-lg font-black text-zinc-900 hover:bg-zinc-50 rounded-2xl transition-all flex items-center justify-between group"
                   >
                     <div className="flex items-center gap-4">
-                      <link.icon className="w-5 h-5 text-zinc-400 group-hover:text-emerald-600 transition-colors" />
+                      <link.icon className="w-5 h-5 text-white group-hover:text-emerald-600 transition-colors" />
                       {link.label}
                     </div>
                     <ArrowRight className="w-5 h-5 text-zinc-300 group-hover:translate-x-1 transition-transform" />
@@ -257,18 +257,18 @@ const Navbar = () => {
                       {user?.profile_picture ? (
                         <img src={user.profile_picture} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center"><User className="w-8 h-8 text-white/40" /></div>
+                        <div className="w-full h-full flex items-center justify-center"><User className="w-8 h-8 text-white" /></div>
                       )}
                     </div>
                     <div>
                       <p className="font-black text-xl tracking-tight">{user?.first_name} {user?.last_name}</p>
-                      <p className="text-[10px] text-white/60 font-black uppercase tracking-widest mt-1">{user?.role}</p>
+                      <p className="text-[10px] text-white font-black uppercase tracking-widest mt-1">{user?.role}</p>
                     </div>
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] ml-4">Dashboard Features</p>
+                  <p className="text-[10px] font-black text-white uppercase tracking-[0.2em] ml-4">Dashboard Features</p>
                   <div className="grid gap-2">
                     {features.map((item) => (
                       <Link 
@@ -276,7 +276,7 @@ const Navbar = () => {
                         to={`${dashboardPath}?tab=${item.id}`} 
                         className="px-6 py-4 text-lg font-black text-zinc-900 hover:bg-zinc-50 rounded-2xl transition-all flex items-center gap-4 group"
                       >
-                        <div className="w-10 h-10 rounded-xl bg-zinc-100 flex items-center justify-center text-zinc-400 group-hover:bg-zinc-900 group-hover:text-white transition-all">
+                        <div className="w-10 h-10 rounded-xl bg-zinc-100 flex items-center justify-center text-white group-hover:bg-zinc-900 group-hover:text-white transition-all">
                           <item.icon className="w-5 h-5" />
                         </div>
                         {item.label}
@@ -293,7 +293,7 @@ const Navbar = () => {
               </>
             ) : (
               <div className="space-y-4">
-                <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] ml-4">Account Access</p>
+                <p className="text-[10px] font-black text-white uppercase tracking-[0.2em] ml-4">Account Access</p>
                 <div className="grid gap-4">
                   <Link to="/login" className="flex items-center justify-center gap-3 px-6 py-5 text-lg font-black text-zinc-900 bg-zinc-50 border border-zinc-200 rounded-[1.5rem] hover:bg-zinc-100 transition-all">
                     <LogIn className="w-5 h-5" /> Login
@@ -306,7 +306,7 @@ const Navbar = () => {
             )}
 
             <div className="pt-10 border-t border-zinc-100">
-              <div className="flex items-center gap-3 mb-6 text-zinc-400 ml-4">
+              <div className="flex items-center gap-3 mb-6 text-white ml-4">
                 <Languages className="w-4 h-4" />
                 <span className="text-[10px] font-black uppercase tracking-[0.2em]">Regional Settings</span>
               </div>
@@ -317,7 +317,7 @@ const Navbar = () => {
           </div>
 
           <div className="p-8 bg-zinc-50 border-t border-zinc-100">
-            <p className="text-[10px] text-zinc-400 font-bold text-center uppercase tracking-widest">© 2026 Moonstone Bank Global</p>
+            <p className="text-[10px] text-white font-bold text-center uppercase tracking-widest">© 2026 Moonstone Bank Global</p>
           </div>
         </motion.div>
       </motion.div>

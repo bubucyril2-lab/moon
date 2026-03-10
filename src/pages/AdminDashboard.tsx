@@ -122,7 +122,7 @@ const MasterControlRow = ({ customer, onUpdate, onDelete, onAction, formatCurren
         <p className="text-xs font-mono font-bold text-zinc-600 tracking-wider">{customer.account_number || 'NO ACCOUNT'}</p>
         <div className="flex items-center gap-1.5 mt-1.5">
           <ShieldCheck className="w-3 h-3 text-emerald-500" />
-          <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">PIN: {customer.transfer_pin || '----'}</p>
+          <p className="text-[10px] font-black text-white uppercase tracking-widest">PIN: {customer.transfer_pin || '----'}</p>
           <button onClick={() => onAction(customer, 'reset')} className="p-1 hover:bg-zinc-100 rounded-md transition-all text-zinc-400 hover:text-zinc-900">
             <Edit className="w-3 h-3" />
           </button>
@@ -199,7 +199,7 @@ const EditTransactionDateModal = ({ txn, onClose, onUpdate }: { txn: any, onClos
         <div className="flex justify-between items-start mb-8">
           <div>
             <h3 className="text-2xl font-black text-zinc-900 tracking-tight">Adjust Timestamp</h3>
-            <p className="text-zinc-500 text-sm font-medium mt-1">Modify the ledger entry date and time.</p>
+            <p className="text-white text-sm font-medium mt-1">Modify the ledger entry date and time.</p>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-zinc-100 rounded-2xl transition-all">
             <XCircle className="w-6 h-6 text-zinc-300 hover:text-zinc-900" />
@@ -208,7 +208,7 @@ const EditTransactionDateModal = ({ txn, onClose, onUpdate }: { txn: any, onClos
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest ml-1">Transaction Date</label>
+            <label className="text-[10px] font-black text-white uppercase tracking-widest ml-1">Transaction Date</label>
             <input 
               type="date" 
               value={date}
@@ -218,7 +218,7 @@ const EditTransactionDateModal = ({ txn, onClose, onUpdate }: { txn: any, onClos
             />
           </div>
           <div className="space-y-2">
-            <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest ml-1">Transaction Time</label>
+            <label className="text-[10px] font-black text-white uppercase tracking-widest ml-1">Transaction Time</label>
             <input 
               type="time" 
               value={time}
@@ -303,12 +303,12 @@ const CreditDebitTool = ({ customers, onComplete }: { customers: any[], onComple
         </div>
         <div>
           <h3 className="text-2xl font-black text-zinc-900 tracking-tight">Manual Account Adjustment</h3>
-          <p className="text-zinc-500 text-sm">Directly modify customer balances and generate ledger entries.</p>
+          <p className="text-white text-sm">Directly modify customer balances and generate ledger entries.</p>
         </div>
       </div>
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="space-y-2">
-          <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest ml-1">Select Customer</label>
+          <label className="text-[10px] font-black text-white uppercase tracking-widest ml-1">Select Customer</label>
           <select 
             required
             className="w-full px-5 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl outline-none focus:ring-2 focus:ring-zinc-900 transition-all font-bold text-sm"
@@ -324,7 +324,7 @@ const CreditDebitTool = ({ customers, onComplete }: { customers: any[], onComple
           </select>
         </div>
         <div className="space-y-2">
-          <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest ml-1">Adjustment Type</label>
+          <label className="text-[10px] font-black text-white uppercase tracking-widest ml-1">Adjustment Type</label>
           <select 
             className="w-full px-5 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl outline-none focus:ring-2 focus:ring-zinc-900 transition-all font-bold text-sm"
             value={formData.type}
@@ -335,7 +335,7 @@ const CreditDebitTool = ({ customers, onComplete }: { customers: any[], onComple
           </select>
         </div>
         <div className="space-y-2">
-          <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest ml-1">Amount ($)</label>
+          <label className="text-[10px] font-black text-white uppercase tracking-widest ml-1">Amount ($)</label>
           <input 
             type="number" 
             required 
@@ -346,7 +346,7 @@ const CreditDebitTool = ({ customers, onComplete }: { customers: any[], onComple
           />
         </div>
         <div className="space-y-2">
-          <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest ml-1">Transaction Note</label>
+          <label className="text-[10px] font-black text-white uppercase tracking-widest ml-1">Transaction Note</label>
           <input 
             type="text" 
             required 
@@ -1177,7 +1177,7 @@ const AdminDashboard = () => {
   if (loading) return <div className="flex items-center justify-center h-[80vh]">Loading Admin Panel...</div>;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 relative overflow-hidden bg-transparent">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 relative overflow-hidden bg-transparent text-white">
       <div className="flex flex-col gap-10">
         {/* Admin Content */}
         <main className="flex-1 min-w-0">
@@ -1185,8 +1185,8 @@ const AdminDashboard = () => {
             <div className="space-y-10">
               <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
-                  <h1 className="text-4xl font-black text-zinc-900 tracking-tight">Command Center</h1>
-                  <p className="text-zinc-500 font-medium mt-1">Real-time system health and administrative priorities.</p>
+                  <h1 className="text-4xl font-black text-white tracking-tight">Command Center</h1>
+                  <p className="text-white font-medium mt-1">Real-time system health and administrative priorities.</p>
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="px-5 py-3 bg-emerald-50 text-emerald-600 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-3 border border-emerald-100 shadow-sm">
@@ -1207,14 +1207,14 @@ const AdminDashboard = () => {
                   { label: 'Verified Accounts', value: stats?.activeAccounts ?? 0, icon: CheckCircle, color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-100', trend: '98%' },
                   { label: 'Total Liquidity', value: formatCurrency(stats?.totalBalance ?? 0), icon: DollarSign, color: 'text-zinc-900', bg: 'bg-zinc-100', border: 'border-zinc-200', trend: 'Stable' }
                 ].map((stat, i) => (
-                  <div key={i} className="bg-white p-8 rounded-[2.5rem] border border-zinc-200/60 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group relative overflow-hidden">
+                  <div key={i} className="bg-white/5 p-8 rounded-[2.5rem] border border-white/10 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group relative overflow-hidden">
                     <div className={`w-14 h-14 rounded-2xl ${stat.bg} ${stat.color} flex items-center justify-center mb-6 border ${stat.border} shadow-sm group-hover:scale-110 transition-transform`}>
                       <stat.icon className="w-6 h-6" />
                     </div>
                     <div className="flex justify-between items-end">
                       <div>
-                        <p className="text-zinc-400 text-[10px] font-black uppercase tracking-[0.2em]">{stat.label}</p>
-                        <h3 className="text-3xl font-black text-zinc-900 mt-2 tracking-tight">{stat.value}</h3>
+                        <p className="text-white text-[10px] font-black uppercase tracking-[0.2em]">{stat.label}</p>
+                        <h3 className="text-3xl font-black text-white mt-2 tracking-tight">{stat.value}</h3>
                       </div>
                       <div className={`px-2 py-1 rounded-lg text-[10px] font-black ${
                         stat.trend.includes('+') ? 'bg-emerald-50 text-emerald-600' : 'bg-zinc-100 text-zinc-500'
@@ -1223,17 +1223,17 @@ const AdminDashboard = () => {
                       </div>
                     </div>
                     {/* Subtle background accent */}
-                    <div className={`absolute -right-4 -top-4 w-24 h-24 ${stat.bg} opacity-10 rounded-full blur-2xl group-hover:opacity-20 transition-opacity`} />
+                    <div className={`absolute -right-4 -top-4 w-24 h-24 ${stat.bg} opacity-100 rounded-full blur-2xl group-hover:opacity-20 transition-opacity`} />
                   </div>
                 ))}
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-2 bg-white rounded-[2.5rem] border border-zinc-200/60 overflow-hidden shadow-sm">
+                <div className="lg:col-span-2 bg-white/5 rounded-[2.5rem] border border-white/10 overflow-hidden shadow-sm">
                   <div className="p-10 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/30">
                     <div>
-                      <h3 className="font-black text-zinc-900 text-xl tracking-tight">Pending Ledger Approvals</h3>
-                      <p className="text-zinc-500 text-sm font-medium mt-1">Transactions awaiting administrative verification.</p>
+                      <h3 className="font-black text-white text-xl tracking-tight">Pending Ledger Approvals</h3>
+                      <p className="text-white text-sm font-medium mt-1">Transactions awaiting administrative verification.</p>
                     </div>
                     <span className="bg-amber-50 text-amber-600 px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-amber-100">
                       {transactions.filter(t => t.status === 'pending').length} Priority
@@ -1252,11 +1252,11 @@ const AdminDashboard = () => {
                           </div>
                           <div>
                             <p className="font-black text-zinc-900 tracking-tight text-lg">{txn.first_name} {txn.last_name}</p>
-                            <p className="text-sm text-zinc-500 font-medium">{txn.description}</p>
+                            <p className="text-sm text-white font-medium">{txn.description}</p>
                             <div className="flex items-center gap-3 mt-2">
-                              <p className="text-[10px] text-zinc-400 font-mono font-bold tracking-widest uppercase bg-zinc-100 px-2 py-0.5 rounded-md">{txn.reference}</p>
+                              <p className="text-[10px] text-white font-mono font-bold tracking-widest uppercase bg-zinc-100 px-2 py-0.5 rounded-md">{txn.reference}</p>
                               <span className="text-zinc-300">•</span>
-                              <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">
+                              <p className="text-[10px] text-white font-bold uppercase tracking-widest">
                                 {new Date(txn.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                               </p>
                             </div>
@@ -1279,7 +1279,7 @@ const AdminDashboard = () => {
                           <CheckCircle className="w-10 h-10 text-emerald-500" />
                         </div>
                         <h4 className="text-zinc-900 font-black tracking-tight text-lg">Ledger Cleared</h4>
-                        <p className="text-zinc-400 font-medium mt-1">All pending transactions have been processed.</p>
+                        <p className="text-white font-medium mt-1">All pending transactions have been processed.</p>
                       </div>
                     )}
                   </div>
@@ -1288,7 +1288,7 @@ const AdminDashboard = () => {
                 <div className="bg-white/70 backdrop-blur-xl rounded-[2.5rem] border border-zinc-200/60 overflow-hidden shadow-sm flex flex-col">
                   <div className="p-10 border-b border-zinc-100 bg-zinc-50/30">
                     <h3 className="font-black text-zinc-900 text-xl tracking-tight">Credit Queue</h3>
-                    <p className="text-zinc-500 text-sm font-medium mt-1">Loan applications for review.</p>
+                    <p className="text-white text-sm font-medium mt-1">Loan applications for review.</p>
                   </div>
                   <div className="flex-1 divide-y divide-zinc-100 overflow-y-auto no-scrollbar">
                     {loans.filter(l => l.status === 'pending').map((loan) => (
@@ -1303,7 +1303,7 @@ const AdminDashboard = () => {
                           </div>
                           <div>
                             <p className="font-black text-zinc-900 tracking-tight text-lg">{loan.first_name} {loan.last_name}</p>
-                            <p className="text-xs text-zinc-500 font-medium truncate w-32">{loan.purpose}</p>
+                            <p className="text-xs text-white font-medium truncate w-32">{loan.purpose}</p>
                             <p className="text-md font-black text-emerald-600 mt-1">{formatCurrency(loan.amount)}</p>
                           </div>
                         </div>
@@ -1318,7 +1318,7 @@ const AdminDashboard = () => {
                     {loans.filter(l => l.status === 'pending').length === 0 && (
                       <div className="p-16 text-center h-full flex flex-col items-center justify-center bg-zinc-50/30">
                         <TrendingUp className="w-12 h-12 text-zinc-200 mb-4" />
-                        <p className="text-zinc-400 font-bold uppercase tracking-widest text-[10px]">No Pending Credit</p>
+                        <p className="text-white font-bold uppercase tracking-widest text-[10px]">No Pending Credit</p>
                       </div>
                     )}
                   </div>
@@ -1332,7 +1332,7 @@ const AdminDashboard = () => {
               <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
                   <h2 className="text-4xl font-black text-zinc-900 tracking-tight">Master Control</h2>
-                  <p className="text-zinc-500 font-medium mt-1">Global administrative override for all customer accounts.</p>
+                  <p className="text-white font-medium mt-1">Global administrative override for all customer accounts.</p>
                 </div>
                 <div className="relative w-full md:w-[400px]">
                   <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
@@ -1351,11 +1351,11 @@ const AdminDashboard = () => {
                   <table className="w-full text-left border-separate border-spacing-0 min-w-[1000px]">
                     <thead>
                       <tr className="bg-zinc-50/50">
-                        <th className="px-8 py-6 text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] border-b border-zinc-100">Customer Identity</th>
-                        <th className="px-8 py-6 text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] border-b border-zinc-100">Account & Security</th>
-                        <th className="px-8 py-6 text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] border-b border-zinc-100">Net Liquidity</th>
-                        <th className="px-8 py-6 text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] border-b border-zinc-100">Balance Adjustment</th>
-                        <th className="px-8 py-6 text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] text-right sticky right-0 bg-zinc-50 z-10 border-b border-zinc-100 backdrop-blur-md">Overrides</th>
+                        <th className="px-8 py-6 text-[10px] font-black text-white uppercase tracking-[0.2em] border-b border-zinc-100">Customer Identity</th>
+                        <th className="px-8 py-6 text-[10px] font-black text-white uppercase tracking-[0.2em] border-b border-zinc-100">Account & Security</th>
+                        <th className="px-8 py-6 text-[10px] font-black text-white uppercase tracking-[0.2em] border-b border-zinc-100">Net Liquidity</th>
+                        <th className="px-8 py-6 text-[10px] font-black text-white uppercase tracking-[0.2em] border-b border-zinc-100">Balance Adjustment</th>
+                        <th className="px-8 py-6 text-[10px] font-black text-white uppercase tracking-[0.2em] text-right sticky right-0 bg-zinc-50 z-10 border-b border-zinc-100 backdrop-blur-md">Overrides</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-zinc-100">
@@ -1409,7 +1409,7 @@ const AdminDashboard = () => {
                           <p className="text-lg font-black text-zinc-900 tracking-tight">{formatCurrency(c.balance || 0)}</p>
                         </div>
                         <div className="p-4 bg-zinc-50 rounded-2xl border border-zinc-100">
-                          <p className="text-[9px] font-black text-zinc-400 uppercase tracking-widest mb-1">Account</p>
+                          <p className="text-[9px] font-black text-white uppercase tracking-widest mb-1">Account</p>
                           <p className="text-xs font-mono font-bold text-zinc-600 truncate">{c.account_number || 'N/A'}</p>
                         </div>
                       </div>
@@ -1436,7 +1436,7 @@ const AdminDashboard = () => {
               <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
                   <h2 className="text-4xl font-black text-zinc-900 tracking-tight">User Directory</h2>
-                  <p className="text-zinc-500 font-medium mt-1">Comprehensive management of the bank's customer base.</p>
+                  <p className="text-white font-medium mt-1">Comprehensive management of the bank's customer base.</p>
                 </div>
                 <div className="relative w-full md:w-[400px]">
                   <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
@@ -1455,12 +1455,12 @@ const AdminDashboard = () => {
                   <table className="w-full text-left border-separate border-spacing-0 min-w-[1100px]">
                     <thead>
                       <tr className="bg-zinc-50/50">
-                        <th className="px-8 py-6 text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] border-b border-zinc-100">Profile</th>
-                        <th className="px-8 py-6 text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] border-b border-zinc-100">Financial Node</th>
-                        <th className="px-8 py-6 text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] border-b border-zinc-100">Security</th>
-                        <th className="px-8 py-6 text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] border-b border-zinc-100">Balance</th>
-                        <th className="px-8 py-6 text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] border-b border-zinc-100">Status</th>
-                        <th className="px-8 py-6 text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] text-right sticky right-0 bg-zinc-50 z-10 border-b border-zinc-100 backdrop-blur-md">Actions</th>
+                        <th className="px-8 py-6 text-[10px] font-black text-white uppercase tracking-[0.2em] border-b border-zinc-100">Profile</th>
+                        <th className="px-8 py-6 text-[10px] font-black text-white uppercase tracking-[0.2em] border-b border-zinc-100">Financial Node</th>
+                        <th className="px-8 py-6 text-[10px] font-black text-white uppercase tracking-[0.2em] border-b border-zinc-100">Security</th>
+                        <th className="px-8 py-6 text-[10px] font-black text-white uppercase tracking-[0.2em] border-b border-zinc-100">Balance</th>
+                        <th className="px-8 py-6 text-[10px] font-black text-white uppercase tracking-[0.2em] border-b border-zinc-100">Status</th>
+                        <th className="px-8 py-6 text-[10px] font-black text-white uppercase tracking-[0.2em] text-right sticky right-0 bg-zinc-50 z-10 border-b border-zinc-100 backdrop-blur-md">Actions</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-zinc-100">
@@ -1476,20 +1476,20 @@ const AdminDashboard = () => {
                                 {c.profile_picture ? (
                                   <img src={c.profile_picture} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                                 ) : (
-                                  <div className="w-full h-full flex items-center justify-center text-zinc-400 font-black text-lg">
+                                  <div className="w-full h-full flex items-center justify-center text-white font-black text-lg">
                                     {c.first_name.charAt(0)}
                                   </div>
                                 )}
                               </div>
                               <div>
                                 <p className="font-black text-zinc-900 tracking-tight">{c.first_name} {c.last_name}</p>
-                                <p className="text-xs text-zinc-500 font-medium">{c.email}</p>
+                                <p className="text-xs text-white font-medium">{c.email}</p>
                               </div>
                             </div>
                           </td>
                           <td className="px-8 py-7 border-b border-zinc-100">
                             <p className="text-sm font-mono font-bold text-zinc-600 tracking-wider">{c.account_number}</p>
-                            <p className="text-[10px] text-zinc-400 uppercase font-black tracking-widest mt-1.5">Premium Savings</p>
+                            <p className="text-[10px] text-white uppercase font-black tracking-widest mt-1.5">Premium Savings</p>
                           </td>
                           <td className="px-8 py-7 border-b border-zinc-100">
                             <div className="flex items-center gap-2">
@@ -1593,13 +1593,13 @@ const AdminDashboard = () => {
               <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
                   <h2 className="text-4xl font-black text-zinc-900 tracking-tight">Financial Ledger</h2>
-                  <p className="text-zinc-500 font-medium mt-1">Global audit trail of all system-wide financial movements.</p>
+                  <p className="text-white font-medium mt-1">Global audit trail of all system-wide financial movements.</p>
                 </div>
                 <div className="flex gap-4">
                   <div className="px-6 py-4 bg-white border border-zinc-200 rounded-2xl shadow-sm flex items-center gap-3">
                     <Activity className="w-5 h-5 text-emerald-500" />
                     <div>
-                      <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Total Volume</p>
+                      <p className="text-[10px] font-black text-white uppercase tracking-widest">Total Volume</p>
                       <p className="text-lg font-black text-zinc-900 tracking-tight">{transactions.length} Entries</p>
                     </div>
                   </div>
@@ -1626,7 +1626,7 @@ const AdminDashboard = () => {
                               {new Date(txn.created_at).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
                             </p>
                           </div>
-                          <p className="text-[10px] text-zinc-400 mt-2 font-mono font-black tracking-[0.2em] uppercase">{txn.reference}</p>
+                          <p className="text-[10px] text-white mt-2 font-mono font-black tracking-[0.2em] uppercase">{txn.reference}</p>
                         </div>
                       </div>
                       <div className="flex items-center justify-between md:justify-end gap-4 md:gap-10 pt-4 md:pt-0 border-t md:border-0 border-zinc-100">
@@ -1652,7 +1652,7 @@ const AdminDashboard = () => {
                         <ArrowRightLeft className="w-10 h-10 text-zinc-200" />
                       </div>
                       <h4 className="text-zinc-900 font-black tracking-tight text-lg">Ledger Empty</h4>
-                      <p className="text-zinc-400 font-medium mt-1">No transactions have been recorded in the system yet.</p>
+                      <p className="text-white font-medium mt-1">No transactions have been recorded in the system yet.</p>
                     </div>
                   )}
                 </div>
@@ -1665,13 +1665,13 @@ const AdminDashboard = () => {
               <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
                   <h2 className="text-4xl font-black text-zinc-900 tracking-tight">Credit Portfolio</h2>
-                  <p className="text-zinc-500 font-medium mt-1">Strategic oversight and management of customer credit facilities.</p>
+                  <p className="text-white font-medium mt-1">Strategic oversight and management of customer credit facilities.</p>
                 </div>
                 <div className="flex gap-4">
                   <div className="px-6 py-4 bg-white border border-zinc-200 rounded-2xl shadow-sm flex items-center gap-3">
                     <TrendingUp className="w-5 h-5 text-blue-500" />
                     <div>
-                      <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Active Loans</p>
+                      <p className="text-[10px] font-black text-white uppercase tracking-widest">Active Loans</p>
                       <p className="text-lg font-black text-zinc-900 tracking-tight">{loans.filter(l => l.status === 'approved').length} Facilities</p>
                     </div>
                   </div>
@@ -1732,7 +1732,7 @@ const AdminDashboard = () => {
                         <TrendingUp className="w-10 h-10 text-zinc-200" />
                       </div>
                       <h4 className="text-zinc-900 font-black tracking-tight text-lg">Portfolio Empty</h4>
-                      <p className="text-zinc-400 font-medium mt-1">No credit applications have been submitted.</p>
+                      <p className="text-white font-medium mt-1">No credit applications have been submitted.</p>
                     </div>
                   )}
                 </div>
