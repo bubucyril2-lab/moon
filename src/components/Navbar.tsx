@@ -86,7 +86,7 @@ const Navbar = () => {
   return (
     <nav className={`sticky top-0 z-50 ${isAuthenticated ? 'lg:hidden' : ''}`}>
       {/* Top Utility Bar */}
-      <div className="bg-zinc-900 text-white py-2 border-b border-white/5 overflow-hidden">
+      <div className="hidden lg:block bg-zinc-900 text-white py-2 border-b border-white/5 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center gap-2">
           <div className="flex items-center gap-4 sm:gap-6 overflow-x-auto no-scrollbar">
             <Link to="/" className="text-[10px] font-black uppercase tracking-widest hover:text-emerald-400 transition-colors flex items-center gap-1.5 whitespace-nowrap">
@@ -104,7 +104,7 @@ const Navbar = () => {
           </div>
           <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
             <div className="flex items-center gap-1 sm:gap-2">
-              <Languages className="w-3 h-3 text-white hidden sm:block" />
+              <Languages className="w-3 h-3 text-white" />
               <div id="google_translate_element" className="scale-75 origin-right max-w-[100px] sm:max-w-none"></div>
             </div>
             {!isAuthenticated && (
@@ -119,60 +119,54 @@ const Navbar = () => {
       <div className="bg-amber-50/40 backdrop-blur-xl border-b border-zinc-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
-          <div className="flex items-center gap-4">
-            {/* Mobile Menu Button - Hidden as per request */}
-            <button 
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="hidden p-2 text-zinc-600 hover:bg-zinc-100 rounded-lg transition-colors"
-            >
-              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-
             <Link to="/" className="flex items-center gap-2">
               <Landmark className="w-8 h-8 text-emerald-600" />
               <span className="text-xl font-bold text-zinc-900 tracking-tight">Moonstone</span>
             </Link>
-          </div>
 
-          <div className="flex items-center gap-4 sm:gap-8 overflow-x-auto no-scrollbar">
-            <Link to="/" className="text-sm font-medium text-zinc-600 hover:text-emerald-600 transition-colors whitespace-nowrap">Home</Link>
-            {isAuthenticated && (
-              <Link to={dashboardPath} className="text-sm font-medium text-zinc-600 hover:text-emerald-600 transition-colors whitespace-nowrap">Dashboard</Link>
-            )}
-          </div>
+            {/* Desktop Navigation */}
+            <div className="hidden lg:flex items-center gap-8">
+              <Link to="/" className="text-sm font-medium text-zinc-600 hover:text-emerald-600 transition-colors whitespace-nowrap">Home</Link>
+              {isAuthenticated && (
+                <Link to={dashboardPath} className="text-sm font-medium text-zinc-600 hover:text-emerald-600 transition-colors whitespace-nowrap">Dashboard</Link>
+              )}
+            </div>
 
-          <div className="flex items-center gap-4">
             <div className="flex items-center gap-4">
-              {isAuthenticated ? (
-                <>
-                  <Link 
-                    to={dashboardPath} 
-                    className="flex items-center gap-2 text-sm font-medium text-zinc-600 hover:text-emerald-600 transition-colors"
-                  >
-                    {user?.profile_picture ? (
-                      <img 
-                        src={user.profile_picture} 
-                        alt="Profile" 
-                        className="w-8 h-8 rounded-full object-cover border border-zinc-200"
-                        referrerPolicy="no-referrer"
-                      />
-                    ) : (
-                      <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center border border-zinc-200">
-                        <User className="w-4 h-4 text-white" />
-                      </div>
-                    )}
-                    <span className="hidden sm:inline">My Account</span>
-                  </Link>
-                  <button 
-                    onClick={logout}
-                    className="flex items-center gap-2 text-sm font-medium text-red-600 hover:text-red-700 transition-colors"
-                  >
-                    <LogOut className="w-4 h-4" />
-                    <span className="hidden sm:inline">Logout</span>
-                  </button>
-                </>
-              ) : (
-                <>
+              {/* Google Translate Mobile */}
+              <div id="google_translate_element_mobile" className="lg:hidden scale-75 origin-right"></div>
+              
+              {/* Desktop Auth */}
+              <div className="hidden lg:flex items-center gap-4">
+                {isAuthenticated ? (
+                  <>
+                    <Link 
+                      to={dashboardPath} 
+                      className="flex items-center gap-2 text-sm font-medium text-zinc-600 hover:text-emerald-600 transition-colors"
+                    >
+                      {user?.profile_picture ? (
+                        <img 
+                          src={user.profile_picture} 
+                          alt="Profile" 
+                          className="w-8 h-8 rounded-full object-cover border border-zinc-200"
+                          referrerPolicy="no-referrer"
+                        />
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center border border-zinc-200">
+                          <User className="w-4 h-4 text-white" />
+                        </div>
+                      )}
+                      <span>My Account</span>
+                    </Link>
+                    <button 
+                      onClick={logout}
+                      className="flex items-center gap-2 text-sm font-medium text-red-600 hover:text-red-700 transition-colors"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span>Logout</span>
+                    </button>
+                  </>
+                ) : (
                   <Link 
                     to="/register" 
                     className="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-emerald-700 transition-all shadow-sm flex items-center gap-2"
@@ -180,13 +174,43 @@ const Navbar = () => {
                     <UserPlus className="w-4 h-4" />
                     Open Account
                   </Link>
-                </>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile Navigation Rows */}
+          <div className="lg:hidden">
+            {/* Links Row */}
+            <div className="flex items-center gap-6 py-3 border-t border-zinc-200 overflow-x-auto no-scrollbar">
+              <Link to="/" className="text-[10px] font-black uppercase tracking-widest text-zinc-600 whitespace-nowrap">Home</Link>
+              <Link to="/services" className="text-[10px] font-black uppercase tracking-widest text-zinc-600 whitespace-nowrap">Services</Link>
+              <Link to="/about" className="text-[10px] font-black uppercase tracking-widest text-zinc-600 whitespace-nowrap">About</Link>
+              <Link to="/contact" className="text-[10px] font-black uppercase tracking-widest text-zinc-600 whitespace-nowrap">Contact</Link>
+              {isAuthenticated && (
+                <Link to={dashboardPath} className="text-[10px] font-black uppercase tracking-widest text-emerald-600 whitespace-nowrap">Dashboard</Link>
               )}
             </div>
+
+            {/* Auth Row */}
+            {!isAuthenticated ? (
+              <div className="flex items-center gap-3 py-3 border-t border-zinc-200">
+                <Link to="/login" className="flex-1 text-center py-2.5 bg-zinc-100 text-zinc-900 rounded-xl text-[10px] font-black uppercase tracking-widest">Login</Link>
+                <Link to="/register" className="flex-1 text-center py-2.5 bg-emerald-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest">Open Account</Link>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between py-3 border-t border-zinc-200">
+                <Link to={dashboardPath} className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-zinc-600">
+                   <User className="w-4 h-4" /> My Account
+                </Link>
+                <button onClick={logout} className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-red-600">
+                   <LogOut className="w-4 h-4" /> Logout
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
-    </div>
 
     {/* Mobile Menu Overlay */}
     {isMobileMenuOpen && (
@@ -311,7 +335,7 @@ const Navbar = () => {
                 <span className="text-[10px] font-black uppercase tracking-[0.2em]">Regional Settings</span>
               </div>
               <div className="bg-zinc-50 p-6 rounded-[1.5rem] border border-zinc-200">
-                <div id="google_translate_element_mobile"></div>
+                <p className="text-xs text-zinc-500 font-medium">Language settings are available in the top bar.</p>
               </div>
             </div>
           </div>
