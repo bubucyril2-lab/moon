@@ -4,33 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Moonstone Bank</title>
-    <script type="text/javascript">
-      function googleTranslateElementInit() {
-        setTimeout(() => {
-          const config = {
-            pageLanguage: 'en',
-            autoDisplay: false
-          };
-
-          // Initialize desktop widget if it exists and is empty
-          const desktopEl = document.getElementById('google_translate_element');
-          if (desktopEl && !desktopEl.querySelector('.goog-te-gadget')) {
-            new google.translate.TranslateElement(config, 'google_translate_element');
-          }
-
-          // Initialize mobile widget if it exists and is empty
-          const mobileEl = document.getElementById('google_translate_element_mobile');
-          if (mobileEl && !mobileEl.querySelector('.goog-te-gadget')) {
-            new google.translate.TranslateElement(config, 'google_translate_element_mobile');
-          }
-        }, 300);
-      }
-    </script>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
   </body>
 </html>
 

@@ -32,56 +32,120 @@ body {
   top: 0px !important;
 }
 
+/* Ensure the dropdown menu is visible and has high z-index */
+.goog-te-menu-frame {
+  z-index: 1000000 !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+}
+
+.goog-te-menu-frame.skiptranslate {
+  display: block !important;
+}
+
 .goog-te-gadget {
   font-family: inherit !important;
   font-size: 12px !important;
-  color: #666 !important;
+  color: #333 !important;
   line-height: normal !important;
   background: transparent !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: auto !important;
+  height: 100% !important;
+  position: relative !important;
+  z-index: 10000 !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
 }
 
 .goog-te-gadget .goog-te-combo {
   margin: 0 !important;
-  padding: 4px 8px !important;
-  border-radius: 8px !important;
-  border: 1px solid rgba(0, 0, 0, 0.1) !important;
-  background: white !important;
-  font-size: 12px !important;
-  font-weight: 500 !important;
-  color: #18181b !important;
+  padding: 4px 10px !important;
+  border-radius: 0px !important;
+  border: 1px solid #ccc !important;
+  background: #fff !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  color: #333 !important;
   outline: none !important;
   cursor: pointer !important;
   transition: all 0.2s ease !important;
-  display: inline-block !important;
+  display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
-  min-width: 120px !important;
+  height: 28px !important;
+  min-width: 160px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  pointer-events: auto !important;
+  position: relative !important;
+  z-index: 10000 !important;
+}
+
+.goog-te-gadget .goog-te-combo:hover {
+  border-color: #999 !important;
 }
 
 /* Ensure the dropdown options are readable */
 .goog-te-gadget .goog-te-combo option {
-  background: white !important;
-  color: #18181b !important;
+  background: #fff !important;
+  color: #333 !important;
+  padding: 8px !important;
 }
 
-.goog-te-gadget span, 
 .goog-logo-link,
 .goog-te-gadget img {
   display: none !important;
+}
+
+.goog-te-gadget span {
+  display: inline-block !important;
+  color: #666 !important;
+  margin-right: 8px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
 }
 
 .goog-te-gadget-simple {
   background-color: transparent !important;
   border: none !important;
   padding: 0 !important;
+  position: relative !important;
+  z-index: 10000 !important;
+  cursor: pointer !important;
 }
 
 #google_translate_element, #google_translate_element_mobile {
-  display: inline-flex;
-  align-items: center;
-  height: auto;
-  overflow: hidden;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   background: transparent !important;
+  position: relative !important;
+  z-index: 10000 !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}
+
+#google_translate_element_mobile .goog-te-gadget .goog-te-combo {
+  background: white !important;
+  color: #18181b !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  height: 32px !important;
+  min-width: 180px !important;
+  pointer-events: auto !important;
+  position: relative !important;
+  z-index: 10000 !important;
+  cursor: pointer !important;
+}
+
+#google_translate_element_mobile .goog-te-gadget .goog-te-combo option {
+  background: white !important;
+  color: #18181b !important;
+}
+
+.bg-white\/10.rounded-md.border.border-white\/20.relative.z-\[70\].hover\:bg-white\/20.transition-colors.cursor-pointer {
+  pointer-events: auto !important;
 }
 
 /* Ensure dashboard cards and sections can show background when needed */

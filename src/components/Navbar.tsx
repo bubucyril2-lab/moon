@@ -68,27 +68,70 @@ const Navbar = () => {
 
   useEffect(() => {
     const initTranslate = () => {
-      if (window.google && window.google.translate && typeof window.googleTranslateElementInit === 'function') {
-        window.googleTranslateElementInit();
+      const translateEl = document.getElementById('google_translate_element');
+      const translateElMobile = document.getElementById('google_translate_element_mobile');
+      
+      if (!translateEl && !translateElMobile) return;
+
+      if (window.google && window.google.translate && window.google.translate.TranslateElement) {
+        // Initialize desktop
+        if (translateEl && !translateEl.querySelector('.goog-te-gadget')) {
+          translateEl.innerHTML = '';
+          try {
+            new window.google.translate.TranslateElement({
+              pageLanguage: 'en',
+              layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
+              autoDisplay: false
+            }, 'google_translate_element');
+          } catch (e) {
+            console.error('Desktop translate init failed', e);
+          }
+        }
+
+        // Initialize mobile
+        if (translateElMobile && !translateElMobile.querySelector('.goog-te-gadget')) {
+          translateElMobile.innerHTML = '';
+          try {
+            new window.google.translate.TranslateElement({
+              pageLanguage: 'en',
+              layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
+              autoDisplay: false
+            }, 'google_translate_element_mobile');
+          } catch (e) {
+            console.error('Mobile translate init failed', e);
+          }
+        }
       }
     };
 
-    // Initial call
-    initTranslate();
+    // Global callback for the script
+    window.googleTranslateElementInit = initTranslate;
 
-    // Aggressive polling for the first 5 seconds to handle loading and re-renders
-    const interval = setInterval(initTranslate, 1000);
+    // Ensure script is loaded
+    const scriptId = 'google-translate-script';
+    if (!document.getElementById(scriptId)) {
+      const script = document.createElement('script');
+      script.id = scriptId;
+      script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+      script.async = true;
+      script.defer = true;
+      document.body.appendChild(script);
+    } else if (window.google && window.google.translate) {
+      initTranslate();
+    }
+
+    // Polling is necessary because React might re-render the Navbar and remove the element
+    const interval = setInterval(initTranslate, 1500);
     
-    // Cleanup
     return () => clearInterval(interval);
-  }, [location.pathname, isAuthenticated]); // Re-run on navigation and auth changes
+  }, [location.pathname, isAuthenticated]);
 
   return (
     <nav className={`sticky top-0 z-50 ${isAuthenticated ? 'lg:hidden' : ''}`}>
       {/* Top Utility Bar */}
-      <div className="hidden lg:block bg-zinc-900 text-white py-2 border-b border-white/5 overflow-hidden">
+      <div className="bg-zinc-900 text-white py-2 border-b border-white/5 relative z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center gap-2">
-          <div className="flex items-center gap-4 sm:gap-6 overflow-x-auto no-scrollbar">
+          <div className="hidden sm:flex items-center gap-4 sm:gap-6 overflow-visible no-scrollbar">
             <Link to="/" className="text-[10px] font-black uppercase tracking-widest hover:text-emerald-400 transition-colors flex items-center gap-1.5 whitespace-nowrap">
               <Landmark className="w-3 h-3" /> <span>Home</span>
             </Link>
@@ -102,10 +145,10 @@ const Navbar = () => {
               <Phone className="w-3 h-3" /> <span>Contact</span>
             </Link>
           </div>
-          <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
-            <div className="flex items-center gap-1 sm:gap-2">
-              <Languages className="w-3 h-3 text-white" />
-              <div id="google_translate_element" className="scale-75 origin-right max-w-[100px] sm:max-w-none"></div>
+          <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0 ml-auto sm:ml-0 relative z-[60]">
+            <div className="flex items-center gap-1.5 px-2 py-1 bg-white/10 rounded-md border border-white/20 relative z-[70] hover:bg-white/20 transition-colors cursor-pointer">
+              <Languages className="w-4 h-4 text-emerald-400 pointer-events-none" />
+              <div id="google_translate_element" className="min-w-[140px] h-6 flex items-center justify-center relative z-[80]"></div>
             </div>
             {!isAuthenticated && (
               <Link to="/login" className="text-[10px] font-black uppercase tracking-widest bg-white/10 px-2 sm:px-3 py-1 rounded-md hover:bg-white/20 transition-all whitespace-nowrap">
@@ -119,10 +162,12 @@ const Navbar = () => {
       <div className="bg-amber-50/40 backdrop-blur-xl border-b border-zinc-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
-            <Link to="/" className="flex items-center gap-2">
-              <Landmark className="w-8 h-8 text-emerald-600" />
-              <span className="text-xl font-bold text-zinc-900 tracking-tight">Moonstone</span>
-            </Link>
+            <div className="flex items-center gap-4">
+              <Link to="/" className="flex items-center gap-2 flex-shrink-0">
+                <Landmark className="w-8 h-8 text-emerald-600" />
+                <span className="text-xl font-bold text-zinc-900 tracking-tight">Moonstone</span>
+              </Link>
+            </div>
 
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-8">
@@ -133,9 +178,6 @@ const Navbar = () => {
             </div>
 
             <div className="flex items-center gap-4">
-              {/* Google Translate Mobile */}
-              <div id="google_translate_element_mobile" className="lg:hidden scale-75 origin-right"></div>
-              
               {/* Desktop Auth */}
               <div className="hidden lg:flex items-center gap-4">
                 {isAuthenticated ? (
@@ -330,12 +372,13 @@ const Navbar = () => {
             )}
 
             <div className="pt-10 border-t border-zinc-100">
-              <div className="flex items-center gap-3 mb-6 text-white ml-4">
-                <Languages className="w-4 h-4" />
+              <div className="flex items-center gap-3 mb-6 text-zinc-900 ml-4">
+                <Languages className="w-4 h-4 text-emerald-600 pointer-events-none" />
                 <span className="text-[10px] font-black uppercase tracking-[0.2em]">Regional Settings</span>
               </div>
-              <div className="bg-zinc-50 p-6 rounded-[1.5rem] border border-zinc-200">
-                <p className="text-xs text-zinc-500 font-medium">Language settings are available in the top bar.</p>
+            <div className="bg-zinc-50 p-6 rounded-[1.5rem] border border-zinc-200 relative z-50">
+                <div id="google_translate_element_mobile" className="flex justify-center relative z-50"></div>
+                <p className="text-[10px] text-zinc-400 font-medium text-center mt-4 uppercase tracking-widest">Select your preferred language</p>
               </div>
             </div>
           </div>
