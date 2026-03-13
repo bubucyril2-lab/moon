@@ -51,17 +51,16 @@ async function startServer() {
   // --- API ROUTES ---
 
   // Auth
-  app.post("/api/auth/register", upload.single("profile_picture"), async (req, res) => {
+  app.post("/api/auth/register", async (req, res) => {
     try {
       const { first_name, last_name, email, phone, address, password } = req.body;
       const username = email.split("@")[0] + Math.floor(Math.random() * 1000);
       const hashedPassword = await bcrypt.hash(password, 10);
-      const profile_picture = req.file ? `/uploads/${req.file.filename}` : null;
 
       const result = db.prepare(`
         INSERT INTO users (first_name, last_name, email, username, phone, address, password, profile_picture)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-      `).run(first_name, last_name, email, username, phone, address, hashedPassword, profile_picture);
+      `).run(first_name, last_name, email, username, phone, address, hashedPassword, null);
 
       const userId = result.lastInsertRowid;
       const accountNumber = "MS" + Math.floor(1000000000 + Math.random() * 9000000000);

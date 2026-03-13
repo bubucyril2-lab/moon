@@ -80,7 +80,6 @@ const Navbar = () => {
           try {
             new window.google.translate.TranslateElement({
               pageLanguage: 'en',
-              layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
               autoDisplay: false
             }, 'google_translate_element');
           } catch (e) {
@@ -94,7 +93,6 @@ const Navbar = () => {
           try {
             new window.google.translate.TranslateElement({
               pageLanguage: 'en',
-              layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
               autoDisplay: false
             }, 'google_translate_element_mobile');
           } catch (e) {
@@ -148,7 +146,7 @@ const Navbar = () => {
           <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0 ml-auto sm:ml-0 relative z-[60]">
             <div className="flex items-center gap-1.5 px-2 py-1 bg-white/10 rounded-md border border-white/20 relative z-[70] hover:bg-white/20 transition-colors cursor-pointer">
               <Languages className="w-4 h-4 text-emerald-400 pointer-events-none" />
-              <div id="google_translate_element" className="min-w-[140px] h-6 flex items-center justify-center relative z-[80]"></div>
+              <div id="google_translate_element" className="min-w-[110px] h-6 flex items-center justify-center relative z-[80]"></div>
             </div>
             {!isAuthenticated && (
               <Link to="/login" className="text-[10px] font-black uppercase tracking-widest bg-white/10 px-2 sm:px-3 py-1 rounded-md hover:bg-white/20 transition-all whitespace-nowrap">

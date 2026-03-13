@@ -61,12 +61,12 @@ body {
 
 .goog-te-gadget .goog-te-combo {
   margin: 0 !important;
-  padding: 4px 10px !important;
-  border-radius: 0px !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
   border: 1px solid #ccc !important;
   background: #fff !important;
-  font-size: 13px !important;
-  font-weight: 400 !important;
+  font-size: 10px !important;
+  font-weight: 500 !important;
   color: #333 !important;
   outline: none !important;
   cursor: pointer !important;
@@ -74,8 +74,8 @@ body {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
-  height: 28px !important;
-  min-width: 160px !important;
+  height: 22px !important;
+  min-width: 100px !important;
   text-transform: uppercase !important;
   letter-spacing: 0.05em !important;
   pointer-events: auto !important;
@@ -101,9 +101,9 @@ body {
 
 .goog-te-gadget span {
   display: inline-block !important;
-  color: #666 !important;
-  margin-right: 8px !important;
-  font-size: 12px !important;
+  color: #ccc !important;
+  margin-right: 4px !important;
+  font-size: 10px !important;
   font-weight: 500 !important;
 }
 

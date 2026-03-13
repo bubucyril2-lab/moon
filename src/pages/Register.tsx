@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { User, Mail, Phone, MapPin, Lock, Camera, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Mail, Phone, MapPin, Lock, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc, collection, addDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL, uploadString } from 'firebase/storage';
-import { auth, db, storage } from '../lib/firebase';
+import { auth, db } from '../lib/firebase';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -17,20 +16,10 @@ const Register = () => {
     password: '',
     confirm_password: '',
   });
-  const [profilePic, setProfilePic] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setProfilePic(file);
-      setPreview(URL.createObjectURL(file));
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,22 +35,14 @@ const Register = () => {
       const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
       const user = userCredential.user;
 
-      // 2. Upload Profile Picture if exists
-      let profilePictureUrl = null;
-      if (preview) {
-        const storageRef = ref(storage, `profiles/${user.uid}`);
-        await uploadString(storageRef, preview, 'data_url');
-        profilePictureUrl = await getDownloadURL(storageRef);
-      }
-
-      // 3. Create User Document in Firestore
+      // 2. Create User Document in Firestore
       await setDoc(doc(db, 'users', user.uid), {
         first_name: formData.first_name,
         last_name: formData.last_name,
         email: formData.email,
         phone: formData.phone,
         address: formData.address,
-        profile_picture: profilePictureUrl,
+        profile_picture: null,
         role: 'customer',
         status: 'pending',
         created_at: new Date().toISOString()
@@ -123,24 +104,6 @@ const Register = () => {
               {error}
             </div>
           )}
-
-          {/* Profile Picture Upload */}
-          <div className="flex flex-col items-center gap-4">
-            <div className="relative group">
-              <div className="w-32 h-32 rounded-full bg-zinc-100 border-4 border-white shadow-lg overflow-hidden flex items-center justify-center">
-                {preview ? (
-                  <img src={preview} alt="Preview" className="w-full h-full object-cover" />
-                ) : (
-                  <User className="w-12 h-12 text-zinc-300" />
-                )}
-              </div>
-              <label className="absolute bottom-0 right-0 bg-emerald-600 text-white p-2 rounded-full cursor-pointer shadow-lg hover:bg-emerald-700 transition-all">
-                <Camera className="w-5 h-5" />
-                <input type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
-              </label>
-            </div>
-            <p className="text-sm text-zinc-500">Upload profile picture (optional)</p>
-          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
