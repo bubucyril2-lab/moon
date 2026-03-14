@@ -41,21 +41,21 @@ const BottomNav = () => {
   const dashboardPath = isAdmin ? "/admin" : "/dashboard";
 
   return (
-    <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-amber-50/40 backdrop-blur-xl border-t border-zinc-200 px-2 py-3 z-[100] flex items-center justify-around shadow-[0_-8px_30px_rgb(0,0,0,0.04)]">
+    <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-amber-50/40 backdrop-blur-xl border-t border-zinc-200 px-2 py-1.5 z-[100] flex items-center justify-around shadow-[0_-4px_15px_rgb(0,0,0,0.03)]">
       {features.slice(0, 5).map((item) => (
         <Link
           key={item.id}
           to={`${dashboardPath}?tab=${item.id}`}
-          className={`flex flex-col items-center gap-1 px-3 py-1 rounded-2xl transition-all ${
+          className={`flex flex-col items-center gap-0.5 px-3 py-1 rounded-2xl transition-all ${
             activeTab === item.id 
               ? 'text-emerald-600' 
               : 'text-zinc-400'
           }`}
         >
-          <div className={`p-2 rounded-xl transition-all ${activeTab === item.id ? 'bg-emerald-50' : ''}`}>
-            <item.icon className="w-6 h-6" />
+          <div className={`p-1.5 rounded-xl transition-all ${activeTab === item.id ? 'bg-emerald-50' : ''}`}>
+            <item.icon className="w-5 h-5" />
           </div>
-          <span className="text-[10px] font-black uppercase tracking-widest">{item.label}</span>
+          <span className="text-[9px] font-black uppercase tracking-tighter">{item.label}</span>
         </Link>
       ))}
     </nav>

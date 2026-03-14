@@ -222,7 +222,7 @@ const Navbar = () => {
           {/* Mobile Navigation Rows */}
           <div className="lg:hidden">
             {/* Links Row */}
-            <div className="flex items-center gap-6 py-3 border-t border-zinc-200 overflow-x-auto no-scrollbar">
+            <div className="flex items-center gap-6 py-1.5 border-t border-zinc-200 overflow-x-auto no-scrollbar">
               <Link to="/" className="text-[10px] font-black uppercase tracking-widest text-zinc-600 whitespace-nowrap">Home</Link>
               <Link to="/services" className="text-[10px] font-black uppercase tracking-widest text-zinc-600 whitespace-nowrap">Services</Link>
               <Link to="/about" className="text-[10px] font-black uppercase tracking-widest text-zinc-600 whitespace-nowrap">About</Link>
@@ -234,12 +234,12 @@ const Navbar = () => {
 
             {/* Auth Row */}
             {!isAuthenticated ? (
-              <div className="flex items-center gap-3 py-3 border-t border-zinc-200">
+              <div className="flex items-center gap-3 py-1.5 border-t border-zinc-200">
                 <Link to="/login" className="flex-1 text-center py-2.5 bg-zinc-100 text-zinc-900 rounded-xl text-[10px] font-black uppercase tracking-widest">Login</Link>
                 <Link to="/register" className="flex-1 text-center py-2.5 bg-emerald-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest">Open Account</Link>
               </div>
             ) : (
-              <div className="flex items-center justify-between py-3 border-t border-zinc-200">
+              <div className="flex items-center justify-between py-1.5 border-t border-zinc-200">
                 <Link to={dashboardPath} className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-zinc-600">
                    <User className="w-4 h-4" /> My Account
                 </Link>
